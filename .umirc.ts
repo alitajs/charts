@@ -1,7 +1,7 @@
 import { defineConfig } from 'dumi';
 
 export default defineConfig({
-  title: 'F2',
+  title: 'Charts',
   mode: 'site',
   exportStatic: {},
   hash: true,
