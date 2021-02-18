@@ -1,9 +1,9 @@
 ---
-title: alitajs/f2 - 支持react hooks 的 F2 图表组件库
+title: alitajs/charts - 移动端的几个通用图表
 order: 10
 hero:
-  title: alitajs/f2
-  desc: 📖 支持react hooks 的 F2 图表组件库
+  title: alitajs/charts
+  desc: 📖 移动端的几个通用图表
   actions:
     - text: 快速上手
       link: /api/chart
@@ -20,10 +20,8 @@ features:
 footer: Open-source MIT Licensed | Copyright © 2021-present<br />Powered by xiaohuoni
 ---
 
-基于 F2 封装的图表组件，支持 react hooks。帮助你快速的在移动端项目中构建图表。
-完全准照 F2 的 API 封装，支持完全的图表自定义，但是其实在你的项目中，并不需要自定义图表。
-我们通过对移动端的图表需求进行整理和构建，提供了一个常用的[图表库 @alitajs/charts](https://github.com/alitajs/f2)。
-你可以优先使用[@alitajs/charts](https://github.com/alitajs/f2)快速实现你的需求。
+基于 [@alitajs/f2](https://github.com/alitajs/f2) 封装的图表组件。帮助你快速的在移动端项目中构建图表。
+不支持自定义，只支持展示的集中用法，如果你需要自定义的组件，可以使用 [@alitajs/f2](https://github.com/alitajs/f2) 进行自定义。
 
 ## 用法
 
@@ -31,24 +29,38 @@ footer: Open-source MIT Licensed | Copyright © 2021-present<br />Powered by xia
 
 ```tsx
 import React, { useState } from 'react';
-import { Chart, Geometry } from '@alitajs/f2';
+import { Donut } from '@alitajs/charts';
 
 const ChartDemo = () => {
   const data = [
-    { year: '1951', sales: 38 },
-    { year: '1952', sales: 52 },
-    { year: '1956', sales: 61 },
-    { year: '1957', sales: 145 },
-    { year: '1958', sales: 48 },
-    { year: '1959', sales: 38 },
-    { year: '1960', sales: 38 },
-    { year: '1962', sales: 38 },
+    {
+      name: '余额',
+      percent: 2423.0,
+    },
+    {
+      name: '理财产品',
+      percent: 423.0,
+    },
+    {
+      name: '黄金',
+      percent: 1223.0,
+    },
+    {
+      name: '余额宝',
+      percent: 1423.0,
+    },
   ];
   return (
     <>
-      <Chart width={750} height={400} data pixelRatio={window.devicePixelRatio}>
-        <Geometry type="interval" position="year*sales" />
-      </Chart>
+      <Donut
+        data={data}
+        title="卡片标题"
+        type="table1"
+        x="name"
+        y="percent"
+        sumText="5782.70"
+        sumTitle="总资产"
+      />
     </>
   );
 };
@@ -56,61 +68,4 @@ const ChartDemo = () => {
 export default ChartDemo;
 ```
 
-### react hooks 用法
-
-```tsx
-import React, { useState, useRef, useEffect } from 'react';
-import { useChart, useGeometry } from '@alitajs/f2';
-
-const ChartDemo = () => {
-  const data = [
-    { year: '1951', sales: 38 },
-    { year: '1952', sales: 52 },
-    { year: '1956', sales: 61 },
-    { year: '1957', sales: 145 },
-    { year: '1958', sales: 48 },
-    { year: '1959', sales: 38 },
-    { year: '1960', sales: 38 },
-    { year: '1962', sales: 38 },
-  ];
-  const [isXy, setIsXy] = useState(true);
-  const elmRef = useRef<HTMLCanvasElement>(null);
-  const { setContainer, container, chart } = useChart({
-    container: elmRef.current as HTMLCanvasElement,
-    width: 750,
-    height: 400,
-    data,
-    pixelRatio: window.devicePixelRatio,
-  });
-  const { geometry } = useGeometry({
-    type: 'interval',
-    chart,
-    position: 'year*sales',
-  });
-
-  useEffect(() => setContainer(elmRef.current as HTMLElement | undefined), [
-    elmRef.current,
-  ]);
-  useEffect(() => {
-    if (chart && geometry) {
-      geometry.position(isXy ? 'year*sales' : 'sales*year');
-      chart.repaint();
-    }
-  }, [isXy]);
-
-  return (
-    <>
-      <button
-        onClick={() => {
-          setIsXy(!isXy);
-        }}
-      >
-        两级反转
-      </button>
-      <canvas ref={elmRef} style={{ display: 'block' }} />
-    </>
-  );
-};
-
-export default ChartDemo;
-```
+![](https://alipic.lanhuapp.com/SketchCover83b5372339d8a2e9c2bf6768f91ef7f41999aa29fcf43f5012b1833184e26c0b?x-oss-process=image/quality,q_lossless/format,webp)
