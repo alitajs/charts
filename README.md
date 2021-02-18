@@ -48,4 +48,4 @@ const ChartDemo = () => {
 export default ChartDemo;
 ```
 
-![](https://alipic.lanhuapp.com/SketchCover83b5372339d8a2e9c2bf6768f91ef7f41999aa29fcf43f5012b1833184e26c0b?x-oss-process=image/quality,q_lossless/format,webp)
+![image](https://user-images.githubusercontent.com/11746742/108316474-ebb06980-71f7-11eb-97d0-ef90c1d985c9.png)
