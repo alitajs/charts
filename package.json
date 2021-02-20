@@ -37,7 +37,7 @@
     "react": "^16.12.0"
   },
   "dependencies": {
-    "@alitajs/f2": "^0.0.2",
+    "@alitajs/f2": "^0.0.3",
     "@alitajs/tracker": "^0.0.3"
   },
   "devDependencies": {
