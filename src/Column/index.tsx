@@ -15,7 +15,7 @@ import {
 } from '@alitajs/f2';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 
-interface DountProps {
+interface ColumnProps {
   /**
    * 图表展示数据
    */
@@ -50,7 +50,7 @@ interface DountProps {
    */
   color?: any[];
 }
-const Donut: React.FC<DountProps> = props => {
+const Donut: React.FC<ColumnProps> = props => {
   const {
     data,
     type = 'stack',
@@ -66,7 +66,7 @@ const Donut: React.FC<DountProps> = props => {
     return <p>data is undefined!</p>;
   }
   const isStack = type === 'stack';
-  const isDodge = type === 'dodge';
+
   let checked = data[0][xName];
   let attributeIndex = 0;
   const findAttributeTemp = data[0][x];
@@ -85,7 +85,7 @@ const Donut: React.FC<DountProps> = props => {
         chart.showTooltip(point); // 展示该点的 tooltip
       }, 100);
     }
-    if (isDodge) {
+    if (!isStack) {
       setTimeout(() => {
         const { chart } = chartRef.current;
         data.forEach(function(obj) {
