@@ -12,4 +12,8 @@ nav:
 
 <code src="./demos/dodge.tsx" />
 
+### 无坐标单柱状图
+
+<code src="./demos/noCoordinates.tsx" />
+
 <API/>

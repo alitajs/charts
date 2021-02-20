@@ -1,5 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import _ from 'lodash';
+import { Button, Divider } from 'antd';
+import 'antd/dist/antd.css';
+import { RightOutlined } from '@ant-design/icons';
 import {
   Chart,
   Geometry,
@@ -24,8 +27,12 @@ interface ColumnProps {
    * 图表类型
    * @default stack
    */
-  type?: 'stack' | 'dodge';
+  type?: 'stack' | 'dodge' | 'noCoordinates';
   title?: string;
+  /**
+   * 副标题
+   */
+  subtitle?: string;
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -55,6 +62,7 @@ const Donut: React.FC<ColumnProps> = props => {
     data,
     type = 'stack',
     title,
+    subtitle,
     colDefs = {},
     x,
     xName = `${x}`,
@@ -65,8 +73,10 @@ const Donut: React.FC<ColumnProps> = props => {
   if (!data) {
     return <p>data is undefined!</p>;
   }
-  const isStack = type === 'stack';
 
+  const isStack = type === 'stack';
+  const isDodge = type === 'dodge';
+  const isNoCoordinates = type === 'noCoordinates';
   let checked = data[0][xName];
   let attributeIndex = 0;
   const findAttributeTemp = data[0][x];
@@ -85,7 +95,7 @@ const Donut: React.FC<ColumnProps> = props => {
         chart.showTooltip(point); // 展示该点的 tooltip
       }, 100);
     }
-    if (!isStack) {
+    if (isDodge) {
       setTimeout(() => {
         const { chart } = chartRef.current;
         data.forEach(function(obj) {
@@ -108,6 +118,25 @@ const Donut: React.FC<ColumnProps> = props => {
             offsetX,
           });
         });
+        chart.repaint();
+      }, 100);
+    }
+    if (isNoCoordinates) {
+      setTimeout(() => {
+        const { chart } = chartRef.current;
+        data.forEach(function(obj) {
+          chart.guide().text({
+            limitInPlot: true,
+            position: [obj[x], obj[y]],
+            content: obj[y] + '单',
+            style: {
+              textBaseline: 'bottom',
+              textAlign: 'center',
+              fontSize: px2hd(30),
+            },
+          });
+        });
+
         chart.repaint();
       }, 100);
     }
@@ -134,13 +163,45 @@ const Donut: React.FC<ColumnProps> = props => {
           {title}
         </div>
       )}
+
+      {isNoCoordinates && (
+        <div
+          style={{
+            fontSize: '0.32rem',
+            color: '#BABABA',
+            padding: '0.32rem',
+            fontWeight: 500,
+            display: 'flex',
+            alignItems: 'center',
+            height: '0.30rem',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          <div
+            style={{
+              backgroundColor: '#008BFC',
+              width: '0.12rem',
+              height: '0.22rem',
+              borderRadius: '0.06rem',
+              marginRight: '0.15rem',
+            }}
+          ></div>
+
+          {subtitle}
+        </div>
+      )}
+
       <Chart
         width={726}
-        height={isStack ? 726 : 850}
+        height={!isDodge ? 726 : 850}
         data={data}
         colDefs={colDefs}
         pixelRatio={window.devicePixelRatio}
-        padding={[px2hd(120), px2hd(80), px2hd(240), px2hd(120)]}
+        padding={
+          isNoCoordinates
+            ? [px2hd(120), px2hd(80), px2hd(120), px2hd(40)]
+            : [px2hd(120), px2hd(80), px2hd(240), px2hd(120)]
+        }
         ref={chartRef}
       >
         {isStack ? (
@@ -178,7 +239,9 @@ const Donut: React.FC<ColumnProps> = props => {
               },
             ]}
           />
-        ) : (
+        ) : null}
+
+        {isDodge ? (
           <Geometry
             type="interval"
             position={`${x}*${y}`}
@@ -192,7 +255,22 @@ const Donut: React.FC<ColumnProps> = props => {
               },
             ]}
           />
-        )}
+        ) : null}
+
+        {isNoCoordinates ? (
+          <Geometry
+            type="interval"
+            position={`${x}*${y}`}
+            color={color}
+            size={px2hd(30)}
+            style={[
+              yName,
+              {
+                radius: [px2hd(15)],
+              },
+            ]}
+          />
+        ) : null}
 
         {isStack ? (
           <Legend
@@ -218,7 +296,9 @@ const Donut: React.FC<ColumnProps> = props => {
               // lineHeight: 20
             }}
           />
-        ) : (
+        ) : null}
+
+        {isDodge ? (
           <Legend
             clickable={false}
             wordSpace={px2hd(18)}
@@ -232,7 +312,9 @@ const Donut: React.FC<ColumnProps> = props => {
               radius: px2hd(8),
             }}
           />
-        )}
+        ) : null}
+
+        {isNoCoordinates ? <Legend disable /> : null}
 
         <Tooltip
           disable={!isStack}
@@ -277,19 +359,26 @@ const Donut: React.FC<ColumnProps> = props => {
         />
 
         <Axis
-          field="index"
+          field={x}
+          line={isNoCoordinates ? null : { top: false }}
           label={text => {
-            return {
-              fontSize: px2hd(30),
-              fill: '#AAAAAA',
-              text: data[text * attributeIndex].city,
-            };
+            return !isNoCoordinates
+              ? {
+                  fontSize: px2hd(30),
+                  fill: '#AAAAAA',
+                  text: data[text * attributeIndex].city,
+                }
+              : {
+                  fontSize: px2hd(30),
+                  fill: '#AAAAAA',
+                };
           }}
           labelOffset={px2hd(30)}
         />
 
         <Axis
-          field="number"
+          enable={!isNoCoordinates}
+          field={y}
           label={{
             fontSize: px2hd(30),
             fill: '#BABABA',
@@ -297,7 +386,7 @@ const Donut: React.FC<ColumnProps> = props => {
           labelOffset={px2hd(30)}
         />
 
-        <Interaction field="pan" />
+        <Interaction disable={isNoCoordinates} field="pan" />
 
         <Interaction
           disable={!isStack}
@@ -315,6 +404,17 @@ const Donut: React.FC<ColumnProps> = props => {
           }}
         />
       </Chart>
+
+      {isNoCoordinates && (
+        <div style={{ textAlign: 'center' }}>
+          <Button
+            style={{ width: '90%', backgroundColor: '#F6F8FA', border: 'none' }}
+          >
+            查看详情
+            <RightOutlined />
+          </Button>
+        </div>
+      )}
     </div>
   );
 };

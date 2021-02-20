@@ -3,7 +3,7 @@ import { Column } from '@alitajs/charts';
 
 interface ColumnProps {
   data: any[];
-  type: 'stack' | 'dodge';
+  type: 'stack' | 'dodge' | 'noCoordinates';
 }
 const DemoChart: React.FC<ColumnProps> = () => {
   const data = [

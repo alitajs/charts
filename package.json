@@ -38,7 +38,8 @@
   },
   "dependencies": {
     "@alitajs/f2": "^0.0.3",
-    "@alitajs/tracker": "^0.0.3"
+    "@alitajs/tracker": "^0.0.3",
+    "antd": "^4.12.3"
   },
   "devDependencies": {
     "@umijs/test": "^3.3.7",
