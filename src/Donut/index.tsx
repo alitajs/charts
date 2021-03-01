@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useRef, useEffect } from 'react';
 import {
   Chart,
   Geometry,
@@ -8,10 +8,16 @@ import {
   Axis,
   Guide,
   px2hd,
-  PieLabel,
-  getPercentage,
+  F2,
 } from '@alitajs/f2';
+import _ from 'lodash';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
+import '../style/index.less';
+
+const { Util, G } = F2;
+const { Group } = G;
+
+const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
 
 interface DountProps {
   /**
@@ -48,8 +54,89 @@ interface DountProps {
    * @default 总资产
    */
   sumTitle?: string;
+  /**
+   *
+   */
+  pieLabel?: 'show' | 'active';
 }
+
+function drawLabel(
+  shape: any,
+  coord: any,
+  canvas: any,
+  resX: string,
+  resY: string,
+  total: any,
+) {
+  var center = coord.center;
+  var origin = shape.get('origin');
+  var points = origin.points;
+  var x1 = (points[2].x - points[1].x) * 0.75 + points[1].x;
+  var x2 = (points[2].x - points[1].x) * 1.8 + points[1].x;
+  var y = (points[0].y + points[1].y) / 2;
+  var point1 = coord.convertPoint({
+    x: x1,
+    y: y,
+  });
+  var point2 = coord.convertPoint({
+    x: x2,
+    y: y,
+  });
+
+  var group = new Group();
+  group.addShape('Line', {
+    attrs: {
+      x1: point1.x,
+      y1: point1.y,
+      x2: point2.x,
+      y2: point2.y,
+      stroke: '#5E5CE6',
+    },
+  });
+
+  var text = group.addShape('Text', {
+    attrs: {
+      x: point2.x,
+      y: point2.y,
+      text:
+        origin._origin[resX] +
+        ' ' +
+        (origin._origin[resY] / total).toFixed(2) +
+        '%',
+      fill: '#5E5CE6',
+      fontSize: px2hd(24),
+      textAlign: 'start',
+      textBaseline: 'bottom',
+    },
+  });
+  var textWidth = text.getBBox().width;
+  var baseLine = group.addShape('Line', {
+    attrs: {
+      x1: point2.x,
+      y1: point2.y,
+      x2: point2.x,
+      y2: point2.y,
+      stroke: '#5E5CE6',
+    },
+  });
+  if (point2.x > center.x) {
+    baseLine.attr('x2', point2.x + textWidth);
+  } else if (point2.x < center.x) {
+    text.attr('textAlign', 'end');
+    baseLine.attr('x2', point2.x - textWidth);
+  } else {
+    text.attr('textAlign', 'center');
+    text.attr('textBaseline', 'top');
+  }
+  canvas.add(group);
+  shape.label = group;
+}
+
 const Donut: React.FC<DountProps> = props => {
+  const chartRef = useRef();
+
+  let lastClickedShape: any = undefined;
+
   const {
     data,
     type = 'normal',
@@ -57,83 +144,192 @@ const Donut: React.FC<DountProps> = props => {
     colDefs = {},
     x,
     y,
-    color = [`${x}`, ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75']],
+    color = [`${x}`, COLOR_MENU],
     sumText,
     sumTitle = '总资产',
   } = props;
+
+  const legendItems = data.map((obj, index) => {
+    return {
+      name: obj[x],
+      value: obj[y].toFixed(2),
+      marker: {
+        symbol: 'circle',
+        fill: color[1][index],
+        radius: px2hd(8),
+      },
+    };
+  });
+
+  const total = data.reduce((acc, cur) => {
+    if (typeof acc === 'number') {
+      return acc + cur[y];
+    }
+    return cur[y] + acc[y];
+  });
+
   const isTableLegend = type === 'table';
   if (!data) {
     return <p>data is undefined!</p>;
   }
   const map = {} as any;
-  let sum = 0;
   const newdate = data.map(function(obj) {
     map[obj[x]] = obj[y];
-    sum += obj[y];
     return { ...obj, a: '1' };
   });
   const htmlStr = `<div style="width: 2.5rem;height: 0.4rem;text-align: center;">
-  <div style="font-size: 0.56rem;color:#333333;font-weight: bold;">${sumText}</div>
+  <div style="font-size: 0.46rem;color:#333333;font-weight: bold;">${sumText}</div>
   <div style="font-size: 0.24rem;color:#999999;">${sumTitle}</div>
 </div>`;
-  console.log(px2hd(726));
   return (
     <div
       style={{
-        margin: '0.24rem',
-        backgroundColor: '#FFF',
+        backgroundColor: '#fff',
         borderRadius: '0.16rem',
         paddingBottom: '0.6rem',
       }}
     >
-      {title && (
-        <div
-          style={{
-            fontSize: '0.32rem',
-            color: '#333333',
-            padding: '0.32rem',
-            fontWeight: 500,
-          }}
-        >
-          {title}
-        </div>
-      )}
-      <Chart
-        width={726}
-        height={isTableLegend ? 726 : 850}
-        data={newdate}
-        colDefs={colDefs}
-        pixelRatio={window.devicePixelRatio}
+      {title && <div className="acharts-title">{title}</div>}
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'center',
+        }}
       >
-        <Tooltip disable />
-        <Legend
-          disable={isTableLegend}
-          position="bottom"
-          itemFormatter={(val: any) => {
-            return val + '    ' + map[val];
-          }}
-        />
-        <Coordinate type="polar" transposed innerRadius={0.7} radius={0.85} />
-        <Axis disable />
-        <PieLabel
-          sidePadding={px2hd(40)}
-          activeShape
-          label1={(data: any) => {
-            return {
-              text: data[x] + getPercentage(data[y] / sum) + '%',
-              fill: '#5E5CE6',
-            };
-          }}
-        />
-        <Geometry
-          type="interval"
-          position={`a*${y}`}
-          color={color}
-          adjust="stack"
-          size={px2hd(100)}
-        />
-        <Guide type="html" position={['50%', '45%']} html={htmlStr} />
-      </Chart>
+        <Chart
+          width={750}
+          height={isTableLegend ? 450 : 650}
+          data={newdate}
+          colDefs={colDefs}
+          pixelRatio={window.devicePixelRatio}
+          ref={chartRef}
+        >
+          <Tooltip disable />
+          <Legend
+            disable={isTableLegend}
+            custom={true}
+            position="bottom"
+            align="center"
+            wordSpace={px2hd(18)}
+            itemMarginBottom={px2hd(36)}
+            itemGap={px2hd(150)}
+            itemWidth={px2hd(240)}
+            nameStyle={{
+              fontSize: px2hd(30), // 文本大小
+              fill: '#999',
+            }}
+            joinString=" "
+            titleStyle={{
+              textAlign: 'start',
+            }}
+            valueStyle={{
+              fill: '#333', // 文本的颜色
+              fontSize: px2hd(30), // 文本大小
+              lineHeight: 34,
+            }}
+            items={legendItems}
+            onClick={(ev: any) => {
+              const { chart } = chartRef.current;
+              var clickedItem = ev.clickedItem;
+              var dataName = clickedItem.get('name');
+              var canvas = chart.get('canvas');
+              var coord = chart.get('coord');
+              var geom = chart.get('geoms')[0];
+              var container = geom.get('container');
+              var shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
+
+              let clickedShape: any;
+              Util.each(shapes, (shape: any) => {
+                var origin = shape.get('origin');
+                if (origin && origin._origin.name === dataName) {
+                  clickedShape = shape;
+                  return false;
+                }
+              });
+              if (lastClickedShape) {
+                lastClickedShape
+                  .animate()
+                  .to({
+                    attrs: {
+                      lineWidth: 0,
+                    },
+                    duration: 200,
+                  })
+                  .onStart(function() {
+                    if (lastClickedShape.label) {
+                      lastClickedShape.label.hide();
+                    }
+                  })
+                  .onEnd(function() {
+                    lastClickedShape.set('selected', false);
+                  });
+              }
+
+              if (clickedShape.get('selected')) {
+                clickedShape
+                  .animate()
+                  .to({
+                    attrs: {
+                      lineWidth: 0,
+                    },
+                    duration: 200,
+                  })
+                  .onStart(function() {
+                    if (clickedShape.label) {
+                      clickedShape.label.hide();
+                    }
+                  })
+                  .onEnd(function() {
+                    clickedShape.set('selected', false);
+                  });
+              } else {
+                var color = clickedShape.attr('fill');
+                clickedShape
+                  .animate()
+                  .to({
+                    attrs: {
+                      lineWidth: 10,
+                    },
+                    duration: 350,
+                    easing: 'bounceOut',
+                  })
+                  .onStart(function() {
+                    clickedShape.attr('stroke', color);
+                    clickedShape.set('zIndex', 1);
+                    container.sort();
+                  })
+                  .onEnd(function() {
+                    clickedShape.set('selected', true);
+                    clickedShape.set('zIndex', 0);
+                    container.sort();
+                    lastClickedShape = clickedShape;
+                    if (clickedShape.label) {
+                      clickedShape.label.show();
+                    } else {
+                      drawLabel(clickedShape, coord, canvas, x, y, total);
+                    }
+                    canvas.draw();
+                  });
+              }
+            }}
+          />
+          <Coordinate
+            type="polar"
+            transposed
+            innerRadius={0.75}
+            radius={isTableLegend ? 0.8 : 0.75}
+          />
+          <Axis disable />
+          <Geometry
+            type="interval"
+            position={`a*${y}`}
+            color={color}
+            adjust="stack"
+            size={px2hd(60)}
+          />
+          <Guide type="html" position={['50%', '45%']} html={htmlStr} />
+        </Chart>
+      </div>
     </div>
   );
 };

@@ -34,7 +34,7 @@ const DemoChart: React.FC<DountProps> = () => {
       <Donut
         data={data}
         title="卡片标题"
-        type="normal"
+        type="table"
         x="name"
         y="percent"
         sumText="5782.70"
