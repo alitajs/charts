@@ -29,6 +29,9 @@ interface DountProps {
    * @default normal
    */
   type?: 'normal' | 'table';
+  /**
+   * 标题
+   */
   title?: string;
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
@@ -37,11 +40,13 @@ interface DountProps {
   /**
    * 图表取得横纵属性值，如x*y
    */
-  // position: string;
   x: string;
+  /**
+   * 图表取得横纵属性值，如x*y
+   */
   y: string;
   /**
-   * 自定义图表颜色
+   * 自定义图表颜色，若超过5个颜色，需要自行定义
    * @default ['name', ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75']]
    */
   color?: any[];
@@ -51,13 +56,13 @@ interface DountProps {
   sumText?: string;
   /**
    * 图表中央显示文字
-   * @default 总资产
    */
   sumTitle?: string;
   /**
-   *
+   * 表格自定义标题
+   * @default ['分类', '占比', '数量']
    */
-  pieLabel?: 'show' | 'active';
+  tableHeader?: string[];
 }
 
 function drawLabel(
@@ -146,7 +151,8 @@ const Donut: React.FC<DountProps> = props => {
     y,
     color = [`${x}`, COLOR_MENU],
     sumText,
-    sumTitle = '总资产',
+    sumTitle = '',
+    tableHeader = ['分类', '占比', '数量'],
   } = props;
 
   const legendItems = data.map((obj, index) => {
@@ -163,10 +169,10 @@ const Donut: React.FC<DountProps> = props => {
 
   const total = data.reduce((acc, cur) => {
     if (typeof acc === 'number') {
-      return acc + cur[y];
+      return parseFloat(acc) + parseFloat(cur[y]);
     }
     return cur[y] + acc[y];
-  });
+  }) as any;
 
   const isTableLegend = type === 'table';
   if (!data) {
@@ -178,9 +184,96 @@ const Donut: React.FC<DountProps> = props => {
     return { ...obj, a: '1' };
   });
   const htmlStr = `<div style="width: 2.5rem;height: 0.4rem;text-align: center;">
-  <div style="font-size: 0.46rem;color:#333333;font-weight: bold;">${sumText}</div>
+  <div style="font-size: 0.42rem;color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
   <div style="font-size: 0.24rem;color:#999999;">${sumTitle}</div>
 </div>`;
+
+  /**
+   * 图例表格点击事件
+   */
+  const tableClick = (res: any) => {
+    const { chart } = chartRef.current as any;
+    var canvas = chart.get('canvas');
+    var coord = chart.get('coord');
+    var geom = chart.get('geoms')[0];
+    var container = geom.get('container');
+    var shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
+
+    let clickedShape: any;
+    Util.each(shapes, (shape: any) => {
+      var origin = shape.get('origin');
+      if (origin && origin._origin.name === res[x]) {
+        clickedShape = shape;
+        return false;
+      }
+    });
+    if (lastClickedShape) {
+      lastClickedShape
+        .animate()
+        .to({
+          attrs: {
+            lineWidth: 0,
+          },
+          duration: 200,
+        })
+        .onStart(function() {
+          if (lastClickedShape.label) {
+            lastClickedShape.label.hide();
+          }
+        })
+        .onEnd(function() {
+          lastClickedShape.set('selected', false);
+        });
+    }
+
+    if (clickedShape.get('selected')) {
+      clickedShape
+        .animate()
+        .to({
+          attrs: {
+            lineWidth: 0,
+          },
+          duration: 200,
+        })
+        .onStart(function() {
+          if (clickedShape.label) {
+            clickedShape.label.hide();
+          }
+        })
+        .onEnd(function() {
+          clickedShape.set('selected', false);
+        });
+    } else {
+      var color = clickedShape.attr('fill');
+      clickedShape
+        .animate()
+        .to({
+          attrs: {
+            lineWidth: 10,
+          },
+          duration: 350,
+          easing: 'bounceOut',
+        })
+        .onStart(function() {
+          clickedShape.attr('stroke', color);
+          clickedShape.set('zIndex', 1);
+          container.sort();
+        })
+        .onEnd(function() {
+          clickedShape.set('selected', true);
+          clickedShape.set('zIndex', 0);
+          container.sort();
+          lastClickedShape = clickedShape;
+          if (clickedShape.label) {
+            clickedShape.label.show();
+          } else {
+            drawLabel(clickedShape, coord, canvas, x, y, total);
+          }
+          canvas.draw();
+        });
+    }
+  };
+
   return (
     <div
       style={{
@@ -189,20 +282,15 @@ const Donut: React.FC<DountProps> = props => {
         paddingBottom: '0.6rem',
       }}
     >
-      {title && <div className="acharts-title">{title}</div>}
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'center',
-        }}
-      >
+      {title && <div className="alitajs-title">{title}</div>}
+      <div>
         <Chart
           width={750}
-          height={isTableLegend ? 450 : 650}
+          height={isTableLegend ? 500 : 650}
           data={newdate}
           colDefs={colDefs}
           pixelRatio={window.devicePixelRatio}
-          ref={chartRef}
+          ref={chartRef as any}
         >
           <Tooltip disable />
           <Legend
@@ -229,7 +317,7 @@ const Donut: React.FC<DountProps> = props => {
             }}
             items={legendItems}
             onClick={(ev: any) => {
-              const { chart } = chartRef.current;
+              const { chart } = chartRef.current as any;
               var clickedItem = ev.clickedItem;
               var dataName = clickedItem.get('name');
               var canvas = chart.get('canvas');
@@ -237,7 +325,6 @@ const Donut: React.FC<DountProps> = props => {
               var geom = chart.get('geoms')[0];
               var container = geom.get('container');
               var shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
-
               let clickedShape: any;
               Util.each(shapes, (shape: any) => {
                 var origin = shape.get('origin');
@@ -264,7 +351,6 @@ const Donut: React.FC<DountProps> = props => {
                     lastClickedShape.set('selected', false);
                   });
               }
-
               if (clickedShape.get('selected')) {
                 clickedShape
                   .animate()
@@ -317,7 +403,7 @@ const Donut: React.FC<DountProps> = props => {
             type="polar"
             transposed
             innerRadius={0.75}
-            radius={isTableLegend ? 0.8 : 0.75}
+            radius={0.75}
           />
           <Axis disable />
           <Geometry
@@ -329,6 +415,42 @@ const Donut: React.FC<DountProps> = props => {
           />
           <Guide type="html" position={['50%', '45%']} html={htmlStr} />
         </Chart>
+        {isTableLegend && (
+          <div className="alitajs-donut-table">
+            <div className="alitajs-donut-table-header">
+              <div className="alitajs-donut-table-header-type">
+                {tableHeader[0]}
+              </div>
+              <div className="alitajs-donut-table-header-ratio">
+                {tableHeader[1]}
+              </div>
+              <div className="alitajs-donut-table-header-num">
+                {tableHeader[2]}
+              </div>
+            </div>
+            <div>
+              {data.map((item, index: number) => (
+                <div
+                  className="alitajs-donut-table-body"
+                  key={item[x]}
+                  onClick={() => tableClick(item)}
+                >
+                  <div className="alitajs-donut-table-body-type">
+                    <div
+                      className="alitajs-donut-table-dot"
+                      style={{ backgroundColor: color[1][index] }}
+                    />
+                    {item[x]}
+                  </div>
+                  <div className="alitajs-donut-table-body-ratio">
+                    {`${((parseInt(item[y], 10) / total) * 100).toFixed(0)}%`}
+                  </div>
+                  <div className="alitajs-donut-table-body-num">{item[y]}</div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
