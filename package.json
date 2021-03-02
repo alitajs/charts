@@ -38,6 +38,7 @@
   },
   "dependencies": {
     "@alitajs/f2": "^0.0.3",
+    "@alitajs/theme": "^0.0.3",
     "@alitajs/tracker": "^0.0.3"
   },
   "devDependencies": {
