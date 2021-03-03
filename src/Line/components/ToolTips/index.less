@@ -1,0 +1,23 @@
+@import '~@alitajs/theme/lib/index.less';
+
+@prefixCls: alita-line-tooltips;
+
+.@{prefixCls} {
+  position: absolute;
+  left: 0;
+  padding: 10 * @hd 20 * @hd 10 * @hd 10 * @hd;
+  background: #fff;
+  box-shadow: 0 2 * @hd 6 * @hd 0 rgba(109, 114, 120, 0.1);
+  border-radius: 8px;
+  &-title {
+    font-size: 9 * @hd;
+    color: #999;
+    line-height: 12 * @hd;
+  }
+  &-subtitle {
+    margin-top: 2 * @hd;
+    font-size: 9 * @hd;
+    color: #999;
+    line-height: 22 * @hd;
+  }
+}
