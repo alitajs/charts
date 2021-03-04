@@ -11,8 +11,8 @@ interface SingleProgressPros {
    */
   count: number;
   /**
-   *@description 要展示的进度条颜色
-   @default #3563F5
+   * @description 要展示的进度条颜色
+   * @default #3563F5
    */
   color?: string;
   /**
@@ -25,8 +25,8 @@ interface SingleProgressPros {
    */
   rightNode?: React.ReactNode;
   /**
-   *@description 背后进度条的颜色
-   @default #EDF0F5
+   * @description 背后进度条的颜色
+   * @default #EDF0F5
    */
   bgColor?: string;
 }

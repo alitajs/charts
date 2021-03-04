@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { SingleProgress } from '@alitajs/charts';
 import './index.less';
 
-const prefixCls = 'my-demo';
+const prefixCls = 'single-progress-demo';
 interface DemoProps {}
 
 const Demo: FC<DemoProps> = props => {
