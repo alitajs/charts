@@ -12,9 +12,9 @@ const Demo: FC<DemoProps> = props => {
   ];
 
   return (
-    <div className="pages">
-      <div className={'pages-progress'} style={{ marginTop: 30 }}>
-        <div className={'pages-title'}>卡片标题</div>
+    <div className="multipleProgressDemo">
+      <div className="multipleProgressDemo-progress" style={{ marginTop: 30 }}>
+        <div className="multipleProgressDemo-title">卡片标题</div>
         <MultipleProgress data={data} />
       </div>
     </div>
