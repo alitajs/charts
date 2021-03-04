@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react';
+import React from 'react';
 import {
   Chart,
   Geometry,
@@ -10,12 +10,16 @@ import {
   px2hd,
   F2,
 } from '@alitajs/f2';
-import _ from 'lodash';
+import SumBy from 'lodash.sumby';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
-import '../style/index.less';
+import { LegendItem } from '@antv/f2/types/Legend';
+import './index.less';
 
 const { Util, G } = F2;
 const { Group } = G;
+
+const prefixCls = 'alitajs-charts';
+const donutTableCls = 'alitajs-donut-table';
 
 const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
 
@@ -65,30 +69,36 @@ interface DountProps {
   tableHeader?: string[];
 }
 
+interface TableLegendProps extends DountProps {
+  chart?: any;
+  total: number;
+  legendClick: (e: string, chart: any) => void;
+}
+
 function drawLabel(
   shape: any,
   coord: any,
   canvas: any,
   resX: string,
   resY: string,
-  total: any,
+  total: number,
 ) {
-  var center = coord.center;
-  var origin = shape.get('origin');
-  var points = origin.points;
-  var x1 = (points[2].x - points[1].x) * 0.75 + points[1].x;
-  var x2 = (points[2].x - points[1].x) * 1.8 + points[1].x;
-  var y = (points[0].y + points[1].y) / 2;
-  var point1 = coord.convertPoint({
+  const center = coord.center;
+  const origin = shape.get('origin');
+  const points = origin.points;
+  const x1 = (points[2].x - points[1].x) * 0.75 + points[1].x;
+  const x2 = (points[2].x - points[1].x) * 1.8 + points[1].x;
+  const y = (points[0].y + points[1].y) / 2;
+  const point1 = coord.convertPoint({
     x: x1,
     y: y,
   });
-  var point2 = coord.convertPoint({
+  const point2 = coord.convertPoint({
     x: x2,
     y: y,
   });
 
-  var group = new Group();
+  const group = new Group();
   group.addShape('Line', {
     attrs: {
       x1: point1.x,
@@ -99,7 +109,7 @@ function drawLabel(
     },
   });
 
-  var text = group.addShape('Text', {
+  const text = group.addShape('Text', {
     attrs: {
       x: point2.x,
       y: point2.y,
@@ -114,8 +124,8 @@ function drawLabel(
       textBaseline: 'bottom',
     },
   });
-  var textWidth = text.getBBox().width;
-  var baseLine = group.addShape('Line', {
+  const textWidth = text.getBBox().width;
+  const baseLine = group.addShape('Line', {
     attrs: {
       x1: point2.x,
       y1: point2.y,
@@ -137,9 +147,54 @@ function drawLabel(
   shape.label = group;
 }
 
-const Donut: React.FC<DountProps> = props => {
-  const chartRef = useRef();
+/**
+ * 表格图例
+ * @param e
+ */
+const TableLegend = (e: TableLegendProps) => {
+  const {
+    chart,
+    tableHeader = [],
+    data = [],
+    x,
+    color = [`${x}`, COLOR_MENU],
+    y,
+    total,
+    legendClick,
+  } = e;
+  return (
+    <div className={`${donutTableCls}`}>
+      <div className={`${donutTableCls}-header`}>
+        <div className={`${donutTableCls}-header-type`}>{tableHeader[0]}</div>
+        <div className={`${donutTableCls}-header-ratio`}>{tableHeader[1]}</div>
+        <div className={`${donutTableCls}-header-num`}>{tableHeader[2]}</div>
+      </div>
+      <div>
+        {data.map((item: any, index: number) => (
+          <div
+            className={`${donutTableCls}-body`}
+            key={item[x]}
+            onClick={() => legendClick(item[x], chart)}
+          >
+            <div className={`${donutTableCls}-body-type`}>
+              <div
+                className={`${donutTableCls}-dot`}
+                style={{ backgroundColor: color[1][index] }}
+              />
+              {item[x]}
+            </div>
+            <div className={`${donutTableCls}-body-ratio`}>
+              {`${((parseInt(item[y], 10) / total) * 100).toFixed(0)}%`}
+            </div>
+            <div className={`${donutTableCls}-body-num`}>{item[y]}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
 
+const Donut: React.FC<DountProps> = props => {
   let lastClickedShape: any = undefined;
 
   const {
@@ -152,11 +207,18 @@ const Donut: React.FC<DountProps> = props => {
     color = [`${x}`, COLOR_MENU],
     sumText,
     sumTitle = '',
-    tableHeader = ['分类', '占比', '数量'],
   } = props;
 
-  const legendItems = data.map((obj, index) => {
-    return {
+  const total = SumBy(data, y);
+
+  const isTableLegend = type === 'table';
+  if (!data) {
+    return <p>data is undefined!</p>;
+  }
+  const newdate = [] as any[];
+  const legendItems = [] as LegendItem[];
+  data.map((obj, index) => {
+    legendItems.push({
       name: obj[x],
       value: obj[y].toFixed(2),
       marker: {
@@ -164,25 +226,10 @@ const Donut: React.FC<DountProps> = props => {
         fill: color[1][index],
         radius: px2hd(8),
       },
-    };
+    });
+    newdate.push({ ...obj });
   });
 
-  const total = data.reduce((acc, cur) => {
-    if (typeof acc === 'number') {
-      return parseFloat(acc) + parseFloat(cur[y]);
-    }
-    return cur[y] + acc[y];
-  }) as any;
-
-  const isTableLegend = type === 'table';
-  if (!data) {
-    return <p>data is undefined!</p>;
-  }
-  const map = {} as any;
-  const newdate = data.map(function(obj) {
-    map[obj[x]] = obj[y];
-    return { ...obj, a: '1' };
-  });
   const htmlStr = `<div style="width: 2.5rem;height: 0.4rem;text-align: center;">
   <div style="font-size: 0.42rem;color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
   <div style="font-size: 0.24rem;color:#999999;">${sumTitle}</div>
@@ -191,18 +238,17 @@ const Donut: React.FC<DountProps> = props => {
   /**
    * 图例表格点击事件
    */
-  const tableClick = (res: any) => {
-    const { chart } = chartRef.current as any;
-    var canvas = chart.get('canvas');
-    var coord = chart.get('coord');
-    var geom = chart.get('geoms')[0];
-    var container = geom.get('container');
-    var shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
+  const legendClick = (name: string, chart: any) => {
+    const canvas = chart.get('canvas');
+    const coord = chart.get('coord');
+    const geom = chart.get('geoms')[0];
+    const container = geom.get('container');
+    const shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
 
     let clickedShape: any;
     Util.each(shapes, (shape: any) => {
-      var origin = shape.get('origin');
-      if (origin && origin._origin.name === res[x]) {
+      const origin = shape.get('origin');
+      if (origin && origin._origin.name === name) {
         clickedShape = shape;
         return false;
       }
@@ -244,7 +290,7 @@ const Donut: React.FC<DountProps> = props => {
           clickedShape.set('selected', false);
         });
     } else {
-      var color = clickedShape.attr('fill');
+      const color = clickedShape.attr('fill');
       clickedShape
         .animate()
         .to({
@@ -282,15 +328,14 @@ const Donut: React.FC<DountProps> = props => {
         paddingBottom: '0.6rem',
       }}
     >
-      {title && <div className="alitajs-title">{title}</div>}
+      {title && <div className={`${prefixCls}-title`}>{title}</div>}
       <div>
         <Chart
           width={750}
-          height={isTableLegend ? 500 : 650}
+          height={isTableLegend ? 500 : 700}
           data={newdate}
           colDefs={colDefs}
           pixelRatio={window.devicePixelRatio}
-          ref={chartRef as any}
         >
           <Tooltip disable />
           <Legend
@@ -317,94 +362,12 @@ const Donut: React.FC<DountProps> = props => {
             }}
             items={legendItems}
             onClick={(ev: any) => {
-              const { chart } = chartRef.current as any;
-              var clickedItem = ev.clickedItem;
-              var dataName = clickedItem.get('name');
-              var canvas = chart.get('canvas');
-              var coord = chart.get('coord');
-              var geom = chart.get('geoms')[0];
-              var container = geom.get('container');
-              var shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
-              let clickedShape: any;
-              Util.each(shapes, (shape: any) => {
-                var origin = shape.get('origin');
-                if (origin && origin._origin.name === dataName) {
-                  clickedShape = shape;
-                  return false;
-                }
-              });
-              if (lastClickedShape) {
-                lastClickedShape
-                  .animate()
-                  .to({
-                    attrs: {
-                      lineWidth: 0,
-                    },
-                    duration: 200,
-                  })
-                  .onStart(function() {
-                    if (lastClickedShape.label) {
-                      lastClickedShape.label.hide();
-                    }
-                  })
-                  .onEnd(function() {
-                    lastClickedShape.set('selected', false);
-                  });
-              }
-              if (clickedShape.get('selected')) {
-                clickedShape
-                  .animate()
-                  .to({
-                    attrs: {
-                      lineWidth: 0,
-                    },
-                    duration: 200,
-                  })
-                  .onStart(function() {
-                    if (clickedShape.label) {
-                      clickedShape.label.hide();
-                    }
-                  })
-                  .onEnd(function() {
-                    clickedShape.set('selected', false);
-                  });
-              } else {
-                var color = clickedShape.attr('fill');
-                clickedShape
-                  .animate()
-                  .to({
-                    attrs: {
-                      lineWidth: 10,
-                    },
-                    duration: 350,
-                    easing: 'bounceOut',
-                  })
-                  .onStart(function() {
-                    clickedShape.attr('stroke', color);
-                    clickedShape.set('zIndex', 1);
-                    container.sort();
-                  })
-                  .onEnd(function() {
-                    clickedShape.set('selected', true);
-                    clickedShape.set('zIndex', 0);
-                    container.sort();
-                    lastClickedShape = clickedShape;
-                    if (clickedShape.label) {
-                      clickedShape.label.show();
-                    } else {
-                      drawLabel(clickedShape, coord, canvas, x, y, total);
-                    }
-                    canvas.draw();
-                  });
-              }
+              const { clickedItem, chart } = ev;
+              const dataName = clickedItem.get('name');
+              legendClick(dataName, chart);
             }}
           />
-          <Coordinate
-            type="polar"
-            transposed
-            innerRadius={0.75}
-            radius={0.75}
-          />
+          <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
           <Axis disable />
           <Geometry
             type="interval"
@@ -414,43 +377,15 @@ const Donut: React.FC<DountProps> = props => {
             size={px2hd(60)}
           />
           <Guide type="html" position={['50%', '45%']} html={htmlStr} />
+          {isTableLegend && (
+            <TableLegend
+              {...props}
+              color={color}
+              total={total}
+              legendClick={legendClick}
+            />
+          )}
         </Chart>
-        {isTableLegend && (
-          <div className="alitajs-donut-table">
-            <div className="alitajs-donut-table-header">
-              <div className="alitajs-donut-table-header-type">
-                {tableHeader[0]}
-              </div>
-              <div className="alitajs-donut-table-header-ratio">
-                {tableHeader[1]}
-              </div>
-              <div className="alitajs-donut-table-header-num">
-                {tableHeader[2]}
-              </div>
-            </div>
-            <div>
-              {data.map((item, index: number) => (
-                <div
-                  className="alitajs-donut-table-body"
-                  key={item[x]}
-                  onClick={() => tableClick(item)}
-                >
-                  <div className="alitajs-donut-table-body-type">
-                    <div
-                      className="alitajs-donut-table-dot"
-                      style={{ backgroundColor: color[1][index] }}
-                    />
-                    {item[x]}
-                  </div>
-                  <div className="alitajs-donut-table-body-ratio">
-                    {`${((parseInt(item[y], 10) / total) * 100).toFixed(0)}%`}
-                  </div>
-                  <div className="alitajs-donut-table-body-num">{item[y]}</div>
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
       </div>
     </div>
   );
