@@ -2,7 +2,6 @@ import React, { FC } from 'react';
 import { MultipleProgress } from '@alitajs/charts';
 import './index.less';
 
-const prefixCls = 'my-demo';
 interface DemoProps {}
 
 const Demo: FC<DemoProps> = props => {
@@ -13,9 +12,9 @@ const Demo: FC<DemoProps> = props => {
   ];
 
   return (
-    <div className={`${prefixCls}`}>
-      <div className={`${prefixCls}-progress`} style={{ marginTop: 30 }}>
-        <div className={`${prefixCls}-title`}>卡片标题</div>
+    <div className="pages">
+      <div className={'pages-progress'} style={{ marginTop: 30 }}>
+        <div className={'pages-title'}>卡片标题</div>
         <MultipleProgress data={data} />
       </div>
     </div>

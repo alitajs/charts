@@ -1,8 +1,8 @@
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import classnames from 'classnames';
 import './index.less';
 
-interface ProgressPros {
+interface ProgressProps {
   /**
    * @description 进度条颜色
    */
@@ -11,28 +11,27 @@ interface ProgressPros {
    * @description label文字
    */
   label: string;
-
   /**
    * @description 数量
    */
   count: number;
 }
-interface MultipleProgressPros {
+interface MultipleProgressProps {
   /**
    * @description 进度条颜色
    */
-  data: ProgressPros[];
+  data: ProgressProps[];
   /**
-   *@description 进度条高度
-   @default 8
+   * @description 进度条高度
+   * @default 8
    */
   height?: number;
 }
 const prefixCls = 'alita-multiple-progress';
-const MultipleProgress: FC<MultipleProgressPros> = props => {
+const MultipleProgress: FC<MultipleProgressProps> = props => {
   const { data = [], height = 0 } = props;
-  const countList = data.map((item: ProgressPros) => item.count);
-  const sum = countList.reduce(function(prev, curr, idx, arr) {
+  const countList = data.map((item: ProgressProps) => item.count);
+  const sum = countList.reduce(function(prev, curr) {
     return prev + curr;
   });
   const cloumnsList = data.map(
@@ -51,7 +50,7 @@ const MultipleProgress: FC<MultipleProgressPros> = props => {
             : { gridTemplateColumns: cloumnsList.join(' ') }
         }
       >
-        {data.map((item: ProgressPros, index) => {
+        {data.map((item: ProgressProps, index) => {
           const { color, count } = item;
           return (
             <div key={count}>
@@ -71,7 +70,7 @@ const MultipleProgress: FC<MultipleProgressPros> = props => {
         })}
       </div>
       <div className={`${prefixCls}-label`}>
-        {data.map((item: ProgressPros, index) => {
+        {data.map((item: ProgressProps, index) => {
           const { label, color, count } = item;
           return (
             <div className={`${prefixCls}-label-item`} key={count + index}>
