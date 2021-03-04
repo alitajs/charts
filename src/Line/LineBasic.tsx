@@ -15,7 +15,7 @@ import {
 } from './PropsType';
 import './index.less';
 
-const prefixCls = 'alita-charts-linebasic';
+const prefixCls = 'alita-linebasic';
 const LineBaisc: FC<LineBasicProps> = ({
   data = [],
   canvasPadding = [px2hd(90), px2hd(30), 'auto', 'auto'],

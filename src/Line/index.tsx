@@ -3,7 +3,7 @@ import { useTracker, withError } from '@alitajs/tracker';
 import LineBasic from './LineBasic';
 import { LineProps } from './PropsType';
 
-const prefixCls = 'alita-charts-line';
+const prefixCls = 'alita-line';
 const Line: FC<LineProps> = props => {
   const log = useTracker(Line.displayName, {});
   return (
