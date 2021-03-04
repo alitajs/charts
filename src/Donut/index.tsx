@@ -10,7 +10,8 @@ import {
   px2hd,
   F2,
 } from '@alitajs/f2';
-import SumBy from 'lodash.sumby';
+import SumBy from 'lodash/sumby';
+import { withError, useTracker } from '@alitajs/tracker';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import { LegendItem } from '@antv/f2/types/Legend';
 import './index.less';
@@ -19,7 +20,6 @@ const { Util, G } = F2;
 const { Group } = G;
 
 const prefixCls = 'alitajs-charts';
-const donutTableCls = 'alitajs-donut-table';
 
 const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
 
@@ -69,10 +69,15 @@ interface DountProps {
   tableHeader?: string[];
 }
 
-interface TableLegendProps extends DountProps {
-  chart?: any;
+interface TableLegendProps
+  extends Omit<
+    DountProps,
+    'type' | 'title' | 'colDefs' | 'sumText' | 'sumTitle'
+  > {
+  chart?: ChartProps;
   total: number;
   legendClick: (e: string, chart: any) => void;
+  log: any;
 }
 
 function drawLabel(
@@ -161,32 +166,42 @@ const TableLegend = (e: TableLegendProps) => {
     y,
     total,
     legendClick,
+    log,
   } = e;
   return (
-    <div className={`${donutTableCls}`}>
-      <div className={`${donutTableCls}-header`}>
-        <div className={`${donutTableCls}-header-type`}>{tableHeader[0]}</div>
-        <div className={`${donutTableCls}-header-ratio`}>{tableHeader[1]}</div>
-        <div className={`${donutTableCls}-header-num`}>{tableHeader[2]}</div>
+    <div className={`${prefixCls}-donut-table`}>
+      <div className={`${prefixCls}-donut-table-header`}>
+        <div className={`${prefixCls}-donut-table-header-type`}>
+          {tableHeader[0]}
+        </div>
+        <div className={`${prefixCls}-donut-table-header-ratio`}>
+          {tableHeader[1]}
+        </div>
+        <div className={`${prefixCls}-donut-table-header-num`}>
+          {tableHeader[2]}
+        </div>
       </div>
       <div>
         {data.map((item: any, index: number) => (
           <div
-            className={`${donutTableCls}-body`}
+            className={`${prefixCls}-donut-table-body`}
             key={item[x]}
-            onClick={() => legendClick(item[x], chart)}
+            onClick={() => {
+              legendClick(item[x], chart);
+              log('onClick');
+            }}
           >
-            <div className={`${donutTableCls}-body-type`}>
+            <div className={`${prefixCls}-donut-table-body-type`}>
               <div
-                className={`${donutTableCls}-dot`}
+                className={`${prefixCls}-donut-table-dot`}
                 style={{ backgroundColor: color[1][index] }}
               />
               {item[x]}
             </div>
-            <div className={`${donutTableCls}-body-ratio`}>
+            <div className={`${prefixCls}-donut-table-body-ratio`}>
               {`${((parseInt(item[y], 10) / total) * 100).toFixed(0)}%`}
             </div>
-            <div className={`${donutTableCls}-body-num`}>{item[y]}</div>
+            <div className={`${prefixCls}-donut-table-body-num`}>{item[y]}</div>
           </div>
         ))}
       </div>
@@ -208,6 +223,10 @@ const Donut: React.FC<DountProps> = props => {
     sumText,
     sumTitle = '',
   } = props;
+
+  const log = useTracker(Donut.displayName, {
+    type,
+  });
 
   const total = SumBy(data, y);
 
@@ -365,6 +384,7 @@ const Donut: React.FC<DountProps> = props => {
               const { clickedItem, chart } = ev;
               const dataName = clickedItem.get('name');
               legendClick(dataName, chart);
+              log('onClick');
             }}
           />
           <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
@@ -383,6 +403,7 @@ const Donut: React.FC<DountProps> = props => {
               color={color}
               total={total}
               legendClick={legendClick}
+              log={log}
             />
           )}
         </Chart>
@@ -390,5 +411,5 @@ const Donut: React.FC<DountProps> = props => {
     </div>
   );
 };
-
-export default Donut;
+Donut.displayName = 'Donut';
+export default withError(Donut);
