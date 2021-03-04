@@ -11,7 +11,8 @@
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "entry": "node ./scripts/entry.js",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "newc": "node scripts/createPlusTemplate.js"
   },
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
