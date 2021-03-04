@@ -54,12 +54,11 @@ const MultipleProgress: FC<MultipleProgressPros> = props => {
         {data.map((item: ProgressPros, index) => {
           const { color, count } = item;
           return (
-            <div>
+            <div key={count}>
               <div className={`${prefixCls}-percentage`}>
                 {cloumnsList[index]}
               </div>
               <div
-                key={count}
                 style={{ backgroundColor: color }}
                 className={classnames({
                   [`${prefixCls}-first-item`]: index === 0,
@@ -73,9 +72,9 @@ const MultipleProgress: FC<MultipleProgressPros> = props => {
       </div>
       <div className={`${prefixCls}-label`}>
         {data.map((item: ProgressPros, index) => {
-          const { label, color } = item;
+          const { label, color, count } = item;
           return (
-            <div className={`${prefixCls}-label-item`}>
+            <div className={`${prefixCls}-label-item`} key={count + index}>
               <div
                 className={`${prefixCls}-label-rectangle`}
                 style={{ backgroundColor: color }}
