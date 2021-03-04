@@ -11,7 +11,8 @@
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "entry": "node ./scripts/entry.js",
     "test": "umi-test",
-    "test:coverage": "umi-test --coverage"
+    "test:coverage": "umi-test --coverage",
+    "newc": "node scripts/createPlusTemplate.js"
   },
   "main": "dist/index.js",
   "module": "dist/index.esm.js",
@@ -42,6 +43,7 @@
     "@alitajs/tracker": "^0.0.3"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.11",
     "@umijs/test": "^3.3.7",
     "babel-plugin-version": "^0.2.3",
     "dumi": "^1.1.3",
