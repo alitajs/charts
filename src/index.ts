@@ -2,3 +2,5 @@
 export { default as Column } from './Column';
 export { default as Donut } from './Donut';
 export { default as SmallColumnar } from './SmallColumnar';
+export { default as MultipleProgress } from './MultipleProgress';
+export { default as SingleProgress } from './SingleProgress';

@@ -38,7 +38,7 @@ interface DemoProps {}
 
 const Demo: FC<DemoProps> = props => {
   return (
-    <div className={styles.demo}>
+    <div className={styles.smallColumnarDemo}>
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <div className={styles.title}>卡片标题</div>

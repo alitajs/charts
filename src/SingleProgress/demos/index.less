@@ -1,0 +1,47 @@
+@import '~@alitajs/theme/lib/index.less';
+
+@prefixCls: single-progress-demo;
+@fontColor: #333;
+
+.@{prefixCls} {
+  padding: 8 * @hd;
+
+  &-progress {
+    padding: 8 * @hd;
+    background: #fff;
+    border-radius: 8 * @hd;
+  }
+
+  &-title {
+    font-size: 16 * @hd;
+    font-weight: 600;
+    color: @fontColor;
+  }
+
+  &-subTitlle {
+    margin: 17 * @hd 0;
+    font-size: 12 * @hd;
+    font-weight: 600;
+    color: @fontColor;
+
+    span {
+      margin-right: 6 * @hd;
+      padding: 1 * @hd 2 * @hd;
+      background-color: #0089ff;
+      border-radius: 4 * @hd;
+    }
+  }
+
+  &-item {
+    display: flex;
+    margin: 20 * @hd 0;
+    align-items: center;
+
+    &-left {
+      margin-right: 12 * @hd;
+      width: 30 * @hd;
+      height: 30 * @hd;
+      border-radius: 5 * @hd;
+    }
+  }
+}

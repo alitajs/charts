@@ -1,0 +1,39 @@
+@import '~@alitajs/theme/es/index.less';
+
+@prefixCls: alita-progress;
+
+.@{prefixCls} {
+  width: 100%;
+
+  &-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  &-content {
+    position: relative;
+    flex: 1;
+    width: 100%;
+    margin-top: 6 * @hd;
+    border-radius: 5 * @hd;
+    height: 8 * @hd;
+  }
+
+  &-span {
+    position: absolute;
+    display: inline-block;
+    height: 100%;
+    border-radius: 5 * @hd;
+    animation: move 1s;
+
+    @keyframes move {
+      from {
+        width: 0;
+      }
+      to {
+        max-width: 100%;
+      }
+    }
+  }
+}
