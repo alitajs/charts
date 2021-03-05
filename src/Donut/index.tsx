@@ -76,7 +76,6 @@ interface TableLegendProps
   > {
   chart?: ChartProps;
   total: number;
-  legendClick: (e: string, chart: any) => void;
   log: any;
 }
 
@@ -165,7 +164,6 @@ const TableLegend = (e: TableLegendProps) => {
     color = [`${x}`, COLOR_MENU],
     y,
     total,
-    legendClick,
     log,
   } = e;
   return (
@@ -187,7 +185,7 @@ const TableLegend = (e: TableLegendProps) => {
             className={`${prefixCls}-donut-table-body`}
             key={item[x]}
             onClick={() => {
-              legendClick(item[x], chart);
+              chart?.get('selectShapeByLegend')(item[x]);
               log('onClick');
             }}
           >
@@ -210,8 +208,6 @@ const TableLegend = (e: TableLegendProps) => {
 };
 
 const Donut: React.FC<DountProps> = props => {
-  let lastClickedShape: any = undefined;
-
   const {
     data,
     type = 'normal',
@@ -236,7 +232,7 @@ const Donut: React.FC<DountProps> = props => {
   }
   const newdate = [] as any[];
   const legendItems = [] as LegendItem[];
-  data.map((obj, index) => {
+  data.map((obj, index: number) => {
     legendItems.push({
       name: obj[x],
       value: obj[y].toFixed(2),
@@ -253,91 +249,6 @@ const Donut: React.FC<DountProps> = props => {
   <div style="font-size: 0.42rem;color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
   <div style="font-size: 0.24rem;color:#999999;">${sumTitle}</div>
 </div>`;
-
-  /**
-   * 图例表格点击事件
-   */
-  const legendClick = (name: string, chart: any) => {
-    const canvas = chart.get('canvas');
-    const coord = chart.get('coord');
-    const geom = chart.get('geoms')[0];
-    const container = geom.get('container');
-    const shapes = geom.get('shapes'); // 只有带精细动画的 geom 才有 shapes 这个属性
-
-    let clickedShape: any;
-    Util.each(shapes, (shape: any) => {
-      const origin = shape.get('origin');
-      if (origin && origin._origin.name === name) {
-        clickedShape = shape;
-        return false;
-      }
-    });
-    if (lastClickedShape) {
-      lastClickedShape
-        .animate()
-        .to({
-          attrs: {
-            lineWidth: 0,
-          },
-          duration: 200,
-        })
-        .onStart(function() {
-          if (lastClickedShape.label) {
-            lastClickedShape.label.hide();
-          }
-        })
-        .onEnd(function() {
-          lastClickedShape.set('selected', false);
-        });
-    }
-
-    if (clickedShape.get('selected')) {
-      clickedShape
-        .animate()
-        .to({
-          attrs: {
-            lineWidth: 0,
-          },
-          duration: 200,
-        })
-        .onStart(function() {
-          if (clickedShape.label) {
-            clickedShape.label.hide();
-          }
-        })
-        .onEnd(function() {
-          clickedShape.set('selected', false);
-        });
-    } else {
-      const color = clickedShape.attr('fill');
-      clickedShape
-        .animate()
-        .to({
-          attrs: {
-            lineWidth: 10,
-          },
-          duration: 350,
-          easing: 'bounceOut',
-        })
-        .onStart(function() {
-          clickedShape.attr('stroke', color);
-          clickedShape.set('zIndex', 1);
-          container.sort();
-        })
-        .onEnd(function() {
-          clickedShape.set('selected', true);
-          clickedShape.set('zIndex', 0);
-          container.sort();
-          lastClickedShape = clickedShape;
-          if (clickedShape.label) {
-            clickedShape.label.show();
-          } else {
-            drawLabel(clickedShape, coord, canvas, x, y, total);
-          }
-          canvas.draw();
-        });
-    }
-  };
 
   return (
     <div
@@ -381,9 +292,11 @@ const Donut: React.FC<DountProps> = props => {
             }}
             items={legendItems}
             onClick={(ev: any) => {
-              const { clickedItem, chart } = ev;
+              const { clickedItem, selectShapeByLegend } = ev;
               const dataName = clickedItem.get('name');
-              legendClick(dataName, chart);
+              const onEnd = (clickedShape: any, coord: any, canvas: any) =>
+                drawLabel(clickedShape, coord, canvas, x, y, total);
+              selectShapeByLegend(dataName, onEnd);
               log('onClick');
             }}
           />
@@ -398,13 +311,7 @@ const Donut: React.FC<DountProps> = props => {
           />
           <Guide type="html" position={['50%', '45%']} html={htmlStr} />
           {isTableLegend && (
-            <TableLegend
-              {...props}
-              color={color}
-              total={total}
-              legendClick={legendClick}
-              log={log}
-            />
+            <TableLegend {...props} color={color} total={total} log={log} />
           )}
         </Chart>
       </div>
