@@ -22,7 +22,7 @@ export default () => {
         data={data}
         title="卡片标题"
         x="name"
-        legendList={[
+        legendParams={[
           { label: '线索', value: 'line' },
           { label: '合同', value: 'contract' },
           { label: '商机', value: 'business' },

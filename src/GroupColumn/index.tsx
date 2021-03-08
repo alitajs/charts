@@ -9,7 +9,10 @@ import {
   Guide,
 } from '@alitajs/f2';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
-import { GroupColumnDataProps, GroupColumnLegendListProps } from './PropsType';
+import {
+  GroupColumnDataProps,
+  GroupColumnLegendParamsProps,
+} from './PropsType';
 import './index.less';
 
 const prefixCls = 'alitajs-charts';
@@ -32,7 +35,7 @@ interface GroupColumnProps {
   /**
    * 图例内容
    */
-  legendList: GroupColumnLegendListProps[];
+  legendParams: GroupColumnLegendParamsProps[];
   /**
    * 颜色列表
    * @default ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75']
@@ -66,7 +69,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
   const {
     data,
     x,
-    legendList = [],
+    legendParams = [],
     color = COLOR_MENU,
     title,
     colDefs = {
@@ -83,8 +86,8 @@ const GroupColumn: FC<GroupColumnProps> = props => {
 
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
-    legendList.forEach(leg => {
-      data.forEach((item, index) => {
+    legendParams.forEach((leg: GroupColumnLegendParamsProps) => {
+      data.forEach((item: GroupColumnDataProps, index: number) => {
         dat.push({
           name: leg.value,
           x: item[x],
@@ -142,7 +145,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           itemWidth={px2hd(130)}
           offsetX={px2hd(10)}
           itemFormatter={(item: string) => {
-            const legendItem = legendList.filter(
+            const legendItem = legendParams.filter(
               legend => legend.value === item,
             );
             return legendItem[0]?.label;
