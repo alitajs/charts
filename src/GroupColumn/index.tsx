@@ -51,6 +51,11 @@ interface GroupColumnProps {
    */
   colDefs?: ChartProps['colDefs'];
   /**
+   * 数值范围为 0 至 1，用于调整分组中各个柱子的间距
+   * @default 0.3
+   */
+  marginRatio?: number;
+  /**
    * guide 自定义属性
    */
   guide?: any;
@@ -73,6 +78,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       },
     },
     guide,
+    marginRatio = 0.3,
   } = props;
 
   useEffect(() => {
@@ -113,7 +119,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           position="index*y"
           adjust={{
             type: 'dodge',
-            marginRatio: '0.3',
+            marginRatio,
           }}
           size={px2hd(45)}
           color={['name', color]}
@@ -186,6 +192,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           position={(item: GroupColumnDataProps) => {
             return [item?.index, item?.y];
           }}
+          offsetY={px2hd(-10)}
           {...guide}
         />
       </Chart>

@@ -4,8 +4,12 @@ nav:
   path: /components
 ---
 
-### 分组柱状图
+### 双柱状图
 
 <code src="./demos/index.tsx" />
+
+### 多组柱状图
+
+<code src="./demos/group.tsx" />
 
 <API/>
