@@ -8,4 +8,8 @@ nav:
 
 <code src="./demos/index.tsx" />
 
+### 表格样式
+
+<code src="./demos/table.tsx" />
+
 <API/>
