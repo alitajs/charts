@@ -31,13 +31,6 @@ nav:
 | title  | x 轴数据 | string \| number | -      |
 | value  | y 轴数据 | string \| number | -      |
 
-### LineAliasPositionProps
-
-| 属性名 | 描述         | 类型   | 默认值 |
-| ------ | ------------ | ------ | ------ |
-| x      | x 轴字段名称 | string | date   |
-| y      | y 轴字段名称 | string | value  |
-
 ### LineToolTipsViewProps
 
 | 属性名   | 描述   | 类型            | 默认值   |

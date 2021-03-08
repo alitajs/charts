@@ -4,54 +4,18 @@ import classnames from 'classnames';
 import styles from './index.less';
 
 const data = [
-  {
-    month: 1,
-    count: 12,
-  },
-  {
-    month: 2,
-    count: 34,
-  },
-  {
-    month: 3,
-    count: 26,
-  },
-  {
-    month: 4,
-    count: 75,
-  },
-  {
-    month: 5,
-    count: 23,
-  },
-  {
-    month: 6,
-    count: 44,
-  },
-  {
-    month: 7,
-    count: 56,
-  },
-  {
-    month: 8,
-    count: 20,
-  },
-  {
-    month: 9,
-    count: 62,
-  },
-  {
-    month: 10,
-    count: 34,
-  },
-  {
-    month: 11,
-    count: 98,
-  },
-  {
-    month: 12,
-    count: 103,
-  },
+  { month: 1, count: 12 },
+  { month: 2, count: 34 },
+  { month: 3, count: 26 },
+  { month: 4, count: 75 },
+  { month: 5, count: 23 },
+  { month: 6, count: 44 },
+  { month: 7, count: 56 },
+  { month: 8, count: 20 },
+  { month: 9, count: 62 },
+  { month: 10, count: 34 },
+  { month: 11, count: 98 },
+  { month: 12, count: 103 },
 ];
 
 const menuData = [
@@ -125,7 +89,8 @@ const Demo: FC<DemoProps> = props => {
           <Line
             style={{ backgroundColor: '#fff' }}
             data={lineData}
-            aliasPosition={{ x: 'month', y: 'count' }}
+            x="month"
+            y="count"
             lineColor="l(0) 0:#f40 0.5:#9f9 1:#f0f0f0"
             lineShadowColor="rgba(0,0,0,0.2)"
             areaColor="l(90) 0:#f40 1:#f0f0f0"

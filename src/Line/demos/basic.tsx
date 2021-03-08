@@ -86,7 +86,8 @@ const Demo: FC<DemoProps> = props => {
         <div className={styles.cardBody}>
           <Line
             data={data}
-            aliasPosition={{ x: 'month', y: 'count' }}
+            x="month"
+            y="count"
             colDefs={{
               // month x轴字段名
               month: {
@@ -109,7 +110,8 @@ const Demo: FC<DemoProps> = props => {
         <Line
           style={{ backgroundColor: '#fff' }}
           data={data}
-          aliasPosition={{ x: 'month', y: 'count' }}
+          x="month"
+          y="count"
           colDefs={{
             // month x轴字段名
             month: {

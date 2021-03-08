@@ -18,7 +18,7 @@ import './index.less';
 const prefixCls = 'alita-line';
 const LineBaisc: FC<LineBasicProps> = ({
   data = [],
-  canvasPadding = [px2hd(90), px2hd(30), 'auto', 'auto'],
+  padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
   canvasSize,
   colDefs,
   axisGridColor = '#EDF0F5',
@@ -30,10 +30,8 @@ const LineBaisc: FC<LineBasicProps> = ({
   axisXLabel,
   axisYLabel,
   style = {},
-  aliasPosition = {
-    x: 'date',
-    y: 'value',
-  },
+  x,
+  y,
   onRenderToolTips,
 }) => {
   if (!data) {
@@ -58,7 +56,7 @@ const LineBaisc: FC<LineBasicProps> = ({
       <Chart
         pixelRatio={window.devicePixelRatio}
         data={data}
-        padding={canvasPadding}
+        padding={padding}
         colDefs={colDefs}
         style={{
           width: '100%',
@@ -116,14 +114,14 @@ const LineBaisc: FC<LineBasicProps> = ({
         />
         <Geometry
           type="area"
-          position={`${aliasPosition.x}*${aliasPosition.y}`}
+          position={`${x}*${y}`}
           shape={'smooth'}
           color={areaColor}
           adjust="stack"
         />
         <Geometry
           type="line"
-          position={`${aliasPosition.x}*${aliasPosition.y}`}
+          position={`${x}*${y}`}
           adjust="stack"
           size={px2hd(5)}
           shape={'smooth'}
@@ -150,8 +148,8 @@ const LineBaisc: FC<LineBasicProps> = ({
             radius: px2hd(10),
           }}
           onShow={(ev: any) => {
-            let currentData = ev.items[0];
-            let toolView: LineToolTipsViewProps =
+            const currentData = ev.items[0];
+            const toolView: LineToolTipsViewProps =
               (onRenderToolTips
                 ? onRenderToolTips(currentData)
                 : {

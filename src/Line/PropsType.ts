@@ -1,4 +1,5 @@
 import { ChartProps } from '@alitajs/f2/dist/Chart';
+import { GeometryProps } from '@alitajs/f2/dist/Geometry';
 
 export interface LineCanvasSizeProps {
   /**
@@ -26,20 +27,6 @@ export interface LineChoiceProps {
   value: string;
   [key: string]: any;
 }
-
-export interface LineAliasPositionProps {
-  /**
-   * @description x轴字段名称
-   * @default date
-   */
-  x: string;
-  /**
-   * @description y轴字段名称
-   * @default value
-   */
-  y: string;
-}
-
 export interface LineToolTipsViewProps {
   /**
    * @description x轴数据
@@ -74,9 +61,14 @@ export interface LineProps {
   canvasSize?: LineCanvasSizeProps;
 
   /**
-   * @description xy轴渲染字段
+   * @description 将x轴数据值映射到图形的位置上的方法。
    */
-  aliasPosition?: LineAliasPositionProps;
+  x?: string;
+
+  /**
+   * @description 将y轴数据值映射到图形的位置上的方法。
+   */
+  y?: string;
 
   /**
    * @description 折线色值
@@ -98,7 +90,7 @@ export interface LineProps {
 
   /**
    * @description 配置toolTips弹出框内容
-   * @default 默认x数据为title  y周数据为subTitle
+   * @default 默认x数据为title  y数据为subTitle
    */
   onRenderToolTips?: (e: LineChoiceProps) => LineToolTipsViewProps;
 
@@ -106,7 +98,7 @@ export interface LineProps {
    * @description canvas边距
    * @default [px2hd(90), px2hd(30), 'auto', 'auto']
    */
-  canvasPadding?: ChartProps['padding'];
+  padding?: ChartProps['padding'];
 
   /**
    * @description 坐标轴颜色
