@@ -141,6 +141,7 @@ const LineBaisc: FC<LineBasicProps> = ({
             stroke: lineColor,
             lineWidth: px2hd(2),
           }}
+          triggerOn={['touchstart', 'touchmove']}
           showTooltipMarker
           tooltipMarkerStyle={{
             fill: '#fff', // 设置 tooltipMarker 的样式
