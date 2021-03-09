@@ -1,3 +1,8 @@
+/*
+ * @Descripttion:
+ * @Author: wll
+ * @Date: 2021-03-09 11:11:33
+ */
 import React, { FC } from 'react';
 import { SmallColumnar } from '@alitajs/charts';
 import styles from './index.less';
@@ -6,32 +11,32 @@ const data = [
   {
     month: '01月',
     count: 12,
-    colorIndex: 0,
+    color: 0,
   },
   {
     month: '02月',
     count: 34,
-    colorIndex: 1,
+    color: 1,
   },
   {
     month: '03月',
     count: 26,
-    colorIndex: 0,
+    color: 0,
   },
   {
     month: '04月',
     count: 75,
-    colorIndex: 0,
+    color: 0,
   },
   {
     month: '05月',
     count: 23,
-    colorIndex: 1,
+    color: 1,
   },
   {
     month: '06月',
     count: 44,
-    colorIndex: 1,
+    color: 1, // 对应颜色的下标
   },
 ];
 interface DemoProps {}
@@ -46,8 +51,10 @@ const Demo: FC<DemoProps> = props => {
         <div className={styles.cardBody}>
           <SmallColumnar
             data={data}
-            aliasPosition={{ x: 'month', y: 'count', c: 'colorIndex' }}
             color={['#F36A3F', '#67CA83']}
+            x="month"
+            y="count"
+            aliasColor="color"
           />
         </div>
       </div>

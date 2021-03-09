@@ -1,23 +1,4 @@
 import { ChartProps } from '@alitajs/f2/dist/Chart';
-
-export interface ColumnAliasPositionProps {
-  /**
-   * @description x轴字段名称
-   * @default date
-   */
-  x: string;
-  /**
-   * @description y轴字段名称
-   * @default value
-   */
-  y: string;
-  /**
-   * @description 柱状图颜色下标的字段名称
-   * @default colorIndex
-   */
-  c: string;
-}
-
 export interface SmallColumnarProps {
   /**
    * @description 图表的数据
@@ -35,14 +16,24 @@ export interface SmallColumnarProps {
    * @description canvas边距
    * @default [px2hd(90), px2hd(30), 'auto', 'auto']
    */
-  canvasPadding?: ChartProps['padding'];
+  padding?: ChartProps['padding'];
   /**
-   * @description xy轴渲染字段
+   * @description 将x轴数据值映射到图形X轴字段名。
    */
-  aliasPosition?: ColumnAliasPositionProps;
+  x: string;
+
+  /**
+   * @description 将y轴数据值映射到图形的位Y轴上的字段名
+   */
+  y: string;
   /**
    * @description 住状图眼色值
    * @default ['#F36A3F','#67CA83']
    */
-  colorList?: string[];
+  color?: string[];
+  /**
+   * @description 每个柱状图对应颜色的字段名
+   * @default colorIndex
+   */
+  aliasColor?: string;
 }

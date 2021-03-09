@@ -1,4 +1,4 @@
-import React, { FC, useState, useRef } from 'react';
+import React, { FC } from 'react';
 
 import { Chart, Geometry, Axis, px2hd, Guide } from '@alitajs/f2';
 import { SmallColumnarProps } from './PropsType';
@@ -7,22 +7,20 @@ import './index.less';
 const prefixCls = 'alita-small-columnar';
 const SmallColumnar: FC<SmallColumnarProps> = ({
   data = [],
-  canvasPadding = [px2hd(90), px2hd(30), 'auto', 'auto'],
+  padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
   colDefs,
-  colorList = ['#F36A3F', '#67CA83'],
+  color = ['#F36A3F', '#67CA83'],
   style = {},
-  aliasPosition = {
-    x: 'date',
-    y: 'value',
-    c: 'colorIndex',
-  },
+  x,
+  y,
+  aliasColor = 'colorIndex',
 }) => {
   return (
     <div className={`${prefixCls}`}>
       <Chart
         data={data}
         pixelRatio={window.devicePixelRatio}
-        padding={canvasPadding}
+        padding={padding}
         colDefs={colDefs}
         style={{
           width: '100%',
@@ -32,12 +30,12 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
       >
         <Geometry
           type="interval"
-          position={`${aliasPosition.x}*${aliasPosition.y}`}
+          position={`${x}*${y}`}
           shape={'smooth'}
           color={[
-            aliasPosition.c,
+            aliasColor,
             (value: number) => {
-              return colorList[value];
+              return color[value];
             },
           ]}
           style={{ radius: px2hd(11), width: px2hd(20) }}
@@ -45,9 +43,9 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
           pixelRatio={window.devicePixelRatio}
         />
         <Axis
-          field={aliasPosition.x}
+          field={x}
           line={null}
-          label={(text: string) => {
+          label={() => {
             const ctf = {
               fontSize: px2hd(30),
             };
@@ -56,7 +54,7 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
           grid={null}
         />
         <Axis
-          field={aliasPosition.y}
+          field={y}
           line={null}
           label={() => {
             return '';
@@ -66,11 +64,11 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
         {data.map(item => {
           return (
             <Guide
-              key={item[aliasPosition.y]}
+              key={item[y]}
               type="text"
-              content={item[aliasPosition.y]}
+              content={item[y]}
               style={{ fill: '#333', fontSize: px2hd(24), fontWeight: 'bold' }}
-              position={[item[aliasPosition.x], item[aliasPosition.y]]}
+              position={[item[x], item[y]]}
               offsetX={-px2hd(20)}
               offsetY={-px2hd(20)}
             />
