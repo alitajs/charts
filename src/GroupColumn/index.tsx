@@ -208,6 +208,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         <Interaction field="pan" />
         {newData?.map(item => (
           <Guide
+            key={`${item.index}${item.offsetX}`}
             type="text"
             limitInPlot={true}
             style={{
