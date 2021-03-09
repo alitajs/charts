@@ -40,7 +40,8 @@
   "dependencies": {
     "@alitajs/f2": "^0.0.5",
     "@alitajs/theme": "^0.0.5",
-    "@alitajs/tracker": "^0.0.3"
+    "@alitajs/tracker": "^0.0.3",
+    "sitemap": "^6.3.3"
   },
   "devDependencies": {
     "@types/classnames": "^2.2.11",
