@@ -28,18 +28,6 @@ export default () => {
           { label: '商机', value: 'business' },
         ]}
         color={['#5E5CE6', '#2689F4', '#E58A3C']}
-        guide={{
-          offsetX: (item: any) => {
-            if (item?.name === 'line') return px2hd(-55);
-            else if (item?.name === 'contract') return 0;
-            return px2hd(55);
-          },
-          style: {
-            textBaseline: 'bottom',
-            textAlign: 'center',
-            fontSize: px2hd(24),
-          },
-        }}
         marginRatio={0.7}
         colDefs={{
           index: {

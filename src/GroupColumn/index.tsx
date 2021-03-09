@@ -58,10 +58,6 @@ interface GroupColumnProps {
    * @default 0.3
    */
   marginRatio?: number;
-  /**
-   * guide 自定义属性
-   */
-  guide?: any;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -80,25 +76,55 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         range: [0, 0.89],
       },
     },
-    guide,
     marginRatio = 0.3,
   } = props;
 
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
-    legendParams.forEach((leg: GroupColumnLegendParamsProps) => {
-      data.forEach((item: GroupColumnDataProps, index: number) => {
-        dat.push({
-          name: leg.value,
-          x: item[x],
-          y: item[leg.value],
-          index,
+    // 柱形图排列规则是按中心点两边排列，左右对称。如果其他地方也有用到这个方法，可以移动到 alitajs/f2 中
+    const getOffsetX = (index: number, length: number): number => {
+      const size = 40 / length;
+      const m = index + 1;
+      let offsetX = 0;
+      let c = Math.ceil(length / 2);
+      if (length % 2 === 0) {
+        // 偶数列 2
+        if (m > c) {
+          // 右侧
+          offsetX = (m - c) * (m - 1) * size;
+          return offsetX;
+        } else {
+          offsetX = (c - m + 1) * (length - m) * size;
+          return -offsetX;
+        }
+      } else {
+        // 奇数列
+        if (m === c) return 0;
+        if (m > c) {
+          // 右侧
+          offsetX = (m - c + 1) * (m - 1) * size;
+          return offsetX;
+        } else {
+          offsetX = (c - m + 1) * (length - m) * size - size / 2;
+          return -offsetX;
+        }
+      }
+    };
+    legendParams.forEach(
+      (leg: GroupColumnLegendParamsProps, legendIndex: number) => {
+        data.forEach((item: GroupColumnDataProps, index: number) => {
+          dat.push({
+            name: leg.value,
+            x: item[x],
+            y: item[leg.value],
+            index,
+            offsetX: getOffsetX(legendIndex, legendParams.length),
+          });
         });
-      });
-    });
+      },
+    );
     setNewData(dat);
   }, [data]);
-
   return (
     <div
       style={{
@@ -124,7 +150,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
             type: 'dodge',
             marginRatio,
           }}
-          size={px2hd(45)}
+          size={px2hd(80 / legendParams.length)}
           color={['name', color]}
           style={{
             radius: [px2hd(8), px2hd(8), 0, 0],
@@ -180,24 +206,21 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           labelOffset={px2hd(30)}
         />
         <Interaction field="pan" />
-        <Guide
-          type="text"
-          limitInPlot={true}
-          data={newData}
-          style={{
-            textBaseline: 'bottom',
-            textAlign: 'center',
-            fontSize: px2hd(30),
-          }}
-          content={(item: GroupColumnDataProps) => {
-            return item?.y;
-          }}
-          position={(item: GroupColumnDataProps) => {
-            return [item?.index, item?.y];
-          }}
-          offsetY={px2hd(-10)}
-          {...guide}
-        />
+        {newData?.map(item => (
+          <Guide
+            type="text"
+            limitInPlot={true}
+            style={{
+              textBaseline: 'bottom',
+              textAlign: 'center',
+              fontSize: px2hd(24),
+            }}
+            content={item?.y}
+            position={[item?.index, item?.y]}
+            offsetY={px2hd(-10)}
+            offsetX={px2hd(item?.offsetX as number)}
+          />
+        ))}
       </Chart>
     </div>
   );

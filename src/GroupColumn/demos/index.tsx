@@ -27,12 +27,6 @@ export default () => {
           { label: '合同', value: 'contract' },
         ]}
         color={['#2689F4', '#FCBF3C']}
-        guide={{
-          offsetX: (item: any) => {
-            if (item?.name === 'line') return px2hd(-30);
-            return px2hd(30);
-          },
-        }}
       />
     </div>
   );
