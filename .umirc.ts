@@ -18,7 +18,9 @@ export default defineConfig({
   targets: {
     ios: 8,
   },
-  outputPath: 'doc_dist',
+  sitemap: {
+    hostname: 'https://charts.alitajs.com',
+  },
   // 用于替换 __VERSION__ pkg.version
   extraBabelPlugins: ['version'],
   styles: [
