@@ -232,7 +232,7 @@ const Donut: React.FC<DountProps> = props => {
   }
   const newdate = [] as any[];
   const legendItems = [] as LegendItem[];
-  data.map((obj, index: number) => {
+  data.map((obj: any, index: number) => {
     legendItems.push({
       name: obj[x],
       value: obj[y].toFixed(2),
@@ -309,7 +309,7 @@ const Donut: React.FC<DountProps> = props => {
             adjust="stack"
             size={px2hd(60)}
           />
-          <Guide type="html" position={['50%', '45%']} html={htmlStr} />
+          <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
           {isTableLegend && (
             <TableLegend {...props} color={color} total={total} log={log} />
           )}
