@@ -10,7 +10,7 @@ import {
   px2hd,
   F2,
 } from '@alitajs/f2';
-import SumBy from 'lodash/sumby';
+import SumBy from 'lodash/sumBy';
 import { withError, useTracker } from '@alitajs/tracker';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import { LegendItem } from '@antv/f2/types/Legend';
