@@ -7,8 +7,6 @@ nav:
 
 ### 折线图
 
-### 基础用法
-
 <code src="./demos/basic.tsx" />
 
 <API/>

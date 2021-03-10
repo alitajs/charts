@@ -1,8 +1,3 @@
-/*
- * @Descripttion:
- * @Author: wll
- * @Date: 2021-03-09 11:11:33
- */
 import React, { FC } from 'react';
 import { SmallColumnar } from '@alitajs/charts';
 import styles from './index.less';

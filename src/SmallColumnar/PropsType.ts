@@ -27,7 +27,7 @@ export interface SmallColumnarProps {
    */
   y: string;
   /**
-   * @description 住状图眼色值
+   * @description 柱状图颜色值
    * @default ['#F36A3F','#67CA83']
    */
   color?: string[];
