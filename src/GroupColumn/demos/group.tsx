@@ -12,7 +12,6 @@ export default () => {
     { name: '宁德', line: 810, contract: 490, business: 310 },
     { name: '南平', line: 810, contract: 490, business: 470 },
     { name: '龙岩', line: 810, contract: 490, business: 500 },
-    { name: '莆田', line: 810, contract: 490, business: 290 },
   ];
 
   return (
