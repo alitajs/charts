@@ -7,15 +7,15 @@ import {
   Axis,
   Interaction,
   Guide,
+  Tooltip,
+  F2,
+  autoGetOffsetX,
 } from '@alitajs/f2';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import {
   GroupColumnDataProps,
   GroupColumnLegendParamsProps,
 } from './PropsType';
-import './index.less';
-
-const prefixCls = 'alitajs-charts';
 
 const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
 
@@ -26,10 +26,6 @@ interface GroupColumnProps {
   data: GroupColumnDataProps[];
   /**
    * 标题
-   */
-  title: string;
-  /**
-   * 图表取得横纵属性值，如x*y
    */
   x: string;
   /**
@@ -58,6 +54,11 @@ interface GroupColumnProps {
    * @default 0.3
    */
   marginRatio?: number;
+  /**
+   * 是否展示柱状图上的文本
+   * @default true
+   */
+  showGuide?: boolean;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -67,7 +68,6 @@ const GroupColumn: FC<GroupColumnProps> = props => {
     x,
     legendParams = [],
     color = COLOR_MENU,
-    title,
     colDefs = {
       index: {
         tickInterval: 1,
@@ -77,54 +77,31 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       },
     },
     marginRatio = 0.3,
+    showGuide = true,
   } = props;
 
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
-    // 柱形图排列规则是按中心点两边排列，左右对称。如果其他地方也有用到这个方法，可以移动到 alitajs/f2 中
-    const getOffsetX = (index: number, length: number): number => {
-      const size = 40 / length;
-      const m = index + 1;
-      let offsetX = 0;
-      let c = Math.ceil(length / 2);
-      if (length % 2 === 0) {
-        // 偶数列 2
-        if (m > c) {
-          // 右侧
-          offsetX = (m - c) * (m - 1) * size;
-          return offsetX;
-        } else {
-          offsetX = (c - m + 1) * (length - m) * size;
-          return -offsetX;
-        }
-      } else {
-        // 奇数列
-        if (m === c) return 0;
-        if (m > c) {
-          // 右侧
-          offsetX = (m - c + 1) * (m - 1) * size;
-          return offsetX;
-        } else {
-          offsetX = (c - m + 1) * (length - m) * size - size / 2;
-          return -offsetX;
-        }
-      }
-    };
+
+    /**
+     * 调整符合 antv 的数据结构
+     */
     legendParams.forEach(
       (leg: GroupColumnLegendParamsProps, legendIndex: number) => {
         data.forEach((item: GroupColumnDataProps, index: number) => {
           dat.push({
-            name: leg.value,
+            name: leg.label,
             x: item[x],
             y: item[leg.value],
             index,
-            offsetX: getOffsetX(legendIndex, legendParams.length),
+            offsetX: autoGetOffsetX(legendIndex, legendParams.length),
           });
         });
       },
     );
     setNewData(dat);
   }, [data]);
+
   return (
     <div
       style={{
@@ -133,15 +110,14 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         paddingBottom: '0.6rem',
       }}
     >
-      {title && <div className={`${prefixCls}-title`}>{title}</div>}
       <Chart
         data={newData}
         width={750}
-        height={750}
+        height={500}
         pixelRatio={window.devicePixelRatio}
         animate
         colDefs={colDefs}
-        padding={[px2hd(120), px2hd(80), px2hd(240), px2hd(120)]}
+        padding={[px2hd(120), px2hd(74), px2hd(60), px2hd(120)]}
       >
         <Geometry
           type="interval"
@@ -168,14 +144,15 @@ const GroupColumn: FC<GroupColumnProps> = props => {
             textBaseline: 'middle', // 文本基准线，可取 top middle bottom，默认为middle
             lineHeight: px2hd(34),
           }}
-          itemWidth={px2hd(130)}
-          offsetX={px2hd(10)}
-          itemFormatter={(item: string) => {
-            const legendItem = legendParams.filter(
-              legend => legend.value === item,
-            );
-            return legendItem[0]?.label;
+          valueStyle={{
+            fill: '#333', // 文本的颜色
+            fontSize: px2hd(24), // 文本大小
+            textBaseline: 'middle', // 文本基准线，可取 top middle bottom，默认为middle
+            lineHeight: px2hd(34),
           }}
+          itemWidth={px2hd(200)}
+          offsetX={px2hd(50)}
+          offsetY={px2hd(20)}
         />
         <Axis
           field="index"
@@ -206,21 +183,30 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           labelOffset={px2hd(30)}
         />
         <Interaction field="pan" />
-        {newData?.map(item => (
-          <Guide
-            type="text"
-            limitInPlot={true}
-            style={{
-              textBaseline: 'bottom',
-              textAlign: 'center',
-              fontSize: px2hd(24),
-            }}
-            content={item?.y}
-            position={[item?.index, item?.y]}
-            offsetY={px2hd(-10)}
-            offsetX={px2hd(item?.offsetX as number)}
-          />
-        ))}
+        {showGuide &&
+          newData?.map(item => (
+            <Guide
+              key={`${item.index}${item.offsetX}`}
+              type="text"
+              limitInPlot={true}
+              style={{
+                textBaseline: 'bottom',
+                textAlign: 'center',
+                fontSize: px2hd(24),
+              }}
+              content={item?.y}
+              position={[item?.index, item?.y]}
+              offsetY={px2hd(-10)}
+              offsetX={px2hd(item?.offsetX as number)}
+            />
+          ))}
+        <Tooltip
+          triggerOn={['touchstart', 'touchmove']}
+          custom={true}
+          onChange={({ legend, legendItems }: any) => {
+            legend.setItems(legendItems);
+          }}
+        />
       </Chart>
     </div>
   );

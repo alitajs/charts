@@ -1,6 +1,5 @@
 import React from 'react';
 import { GroupColumn } from '@alitajs/charts';
-import { px2hd } from '@alitajs/f2';
 
 export default () => {
   const data = [

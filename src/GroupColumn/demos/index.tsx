@@ -1,6 +1,5 @@
 import React from 'react';
 import { GroupColumn } from '@alitajs/charts';
-import { px2hd } from '@alitajs/f2';
 
 export default () => {
   const data = [
@@ -13,7 +12,6 @@ export default () => {
     { name: '宁德', line: 810, contract: 490 },
     { name: '南平', line: 810, contract: 490 },
     { name: '龙岩', line: 810, contract: 490 },
-    { name: '莆田', line: 810, contract: 490 },
   ];
 
   return (
