@@ -26,7 +26,6 @@ export default () => {
           { label: '商机', value: 'business' },
         ]}
         color={['#5E5CE6', '#2689F4', '#E58A3C']}
-        marginRatio={0.7}
         colDefs={{
           index: {
             tickInterval: 1,

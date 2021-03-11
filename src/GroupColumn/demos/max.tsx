@@ -3,7 +3,7 @@ import { GroupColumn } from '@alitajs/charts';
 
 export default () => {
   const data = [
-    { name: '福州', line: 710, contract: 700 },
+    { name: '福州', line: 1000, contract: 700 },
     { name: '漳州', line: 500, contract: 230 },
     { name: '厦门', line: 610, contract: 490 },
     { name: '泉州', line: 840, contract: 410 },
