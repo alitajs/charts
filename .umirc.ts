@@ -21,6 +21,9 @@ export default defineConfig({
   sitemap: {
     hostname: 'https://charts.alitajs.com',
   },
+  scripts: [
+    `https://cdn.jsdelivr.net/gh/alitajs/autoTouchemulator@1.0.0/dist/index.umd.min.js`,
+  ],
   // 用于替换 __VERSION__ pkg.version
   extraBabelPlugins: ['version'],
   styles: [
