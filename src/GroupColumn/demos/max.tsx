@@ -24,7 +24,6 @@ export default () => {
           { label: '线索', value: 'line' },
           { label: '合同', value: 'contract' },
         ]}
-        showTooltip
         color={['#2689F4', '#FCBF3C']}
       />
     </div>

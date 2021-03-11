@@ -8,8 +8,6 @@ import {
   Interaction,
   Guide,
   Tooltip,
-  F2,
-  autoGetOffsetX,
 } from '@alitajs/f2';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import {
@@ -49,11 +47,6 @@ interface GroupColumnProps {
       }}
    */
   colDefs?: ChartProps['colDefs'];
-  /**
-   * 数值范围为 0 至 1，用于调整分组中各个柱子的间距
-   * @default 0.3
-   */
-  marginRatio?: number;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -70,7 +63,6 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         range: [0, 0.89],
       },
     },
-    marginRatio = 0.3,
   } = props;
   const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
   const [showGuide, setShowGuide] = useState(true);
@@ -78,6 +70,37 @@ const GroupColumn: FC<GroupColumnProps> = props => {
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
     let show = true;
+
+    // 柱形图排列规则是按中心点两边排列，左右对称。如果其他地方也有用到这个方法，可以移动到 alitajs/f2 中
+    const getOffsetX = (index: number, length: number): number => {
+      const size = 40 / length;
+      const m = index + 1;
+      let offsetX = 0;
+      let c = Math.ceil(length / 2);
+      if (length % 2 === 0) {
+        // 偶数列 2
+        if (m > c) {
+          // 右侧
+          offsetX = (m - c) * (m - 1) * size;
+          return offsetX;
+        } else {
+          offsetX = (c - m + 1) * (length - m) * size;
+          return -offsetX;
+        }
+      } else {
+        // 奇数列
+        if (m === c) return 0;
+        if (m > c) {
+          // 右侧
+          offsetX = (m - c + 1) * (m - 1) * size;
+          return offsetX;
+        } else {
+          offsetX = (c - m + 1) * (length - m) * size - size / 2;
+          return -offsetX;
+        }
+      }
+    };
+
     /**
      * 调整符合 antv 的数据结构
      */
@@ -90,7 +113,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
             x: item[x],
             y: item[leg.value],
             index,
-            offsetX: autoGetOffsetX(legendIndex, legendParams.length),
+            offsetX: getOffsetX(legendIndex, legendParams.length),
           });
         });
       },
@@ -121,7 +144,6 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           position="index*y"
           adjust={{
             type: 'dodge',
-            marginRatio,
           }}
           size={px2hd(80 / legendParams.length)}
           color={['name', color]}

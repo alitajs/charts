@@ -12,7 +12,6 @@ export default () => {
     { name: '宁德', line: 810, contract: 490, business: 310 },
     { name: '南平', line: 810, contract: 490, business: 470 },
     { name: '龙岩', line: 810, contract: 490, business: 500 },
-    { name: '莆田', line: 810, contract: 490, business: 290 },
   ];
 
   return (
@@ -27,7 +26,6 @@ export default () => {
           { label: '商机', value: 'business' },
         ]}
         color={['#5E5CE6', '#2689F4', '#E58A3C']}
-        marginRatio={0.7}
         colDefs={{
           index: {
             tickInterval: 1,
