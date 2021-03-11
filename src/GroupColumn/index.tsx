@@ -54,15 +54,9 @@ interface GroupColumnProps {
    * @default 0.3
    */
   marginRatio?: number;
-  /**
-   * 是否展示柱状图上的文本
-   * @default true
-   */
-  showGuide?: boolean;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
-  const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
   const {
     data,
     x,
@@ -77,18 +71,20 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       },
     },
     marginRatio = 0.3,
-    showGuide = true,
   } = props;
+  const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
+  const [showGuide, setShowGuide] = useState(true);
 
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
-
+    let show = true;
     /**
      * 调整符合 antv 的数据结构
      */
     legendParams.forEach(
       (leg: GroupColumnLegendParamsProps, legendIndex: number) => {
         data.forEach((item: GroupColumnDataProps, index: number) => {
+          if (parseInt(`${item[leg.value]}`) > 999) show = false;
           dat.push({
             name: leg.label,
             x: item[x],
@@ -100,6 +96,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       },
     );
     setNewData(dat);
+    setShowGuide(show);
   }, [data]);
 
   return (
@@ -200,13 +197,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
               offsetX={px2hd(item?.offsetX as number)}
             />
           ))}
-        <Tooltip
-          triggerOn={['touchstart', 'touchmove']}
-          custom={true}
-          onChange={({ legend, legendItems }: any) => {
-            legend.setItems(legendItems);
-          }}
-        />
+        {!showGuide && <Tooltip triggerOn={['touchstart', 'touchmove']} />}
       </Chart>
     </div>
   );
