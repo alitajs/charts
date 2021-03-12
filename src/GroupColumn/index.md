@@ -1,4 +1,7 @@
 ---
+title: 分组柱状图
+group:
+  title: 分组柱状图
 nav:
   title: 组件
   path: /components

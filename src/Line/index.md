@@ -1,5 +1,7 @@
 ---
 title: 折线图
+group:
+  title: 折线图
 nav:
   title: 组件
   path: /components
@@ -7,11 +9,9 @@ nav:
 
 ### 折线图
 
-### 基础用法
-
 <code src="./demos/basic.tsx" />
 
-### 修改配置
+### 彩色折线图
 
 <code src="./demos/index.tsx" />
 
