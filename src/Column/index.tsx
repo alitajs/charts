@@ -5,12 +5,8 @@ import {
   Geometry,
   Tooltip,
   Legend,
-  Coordinate,
   Axis,
-  Guide,
   px2hd,
-  PieLabel,
-  getPercentage,
   Interaction,
 } from '@alitajs/f2';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
@@ -70,7 +66,7 @@ const Donut: React.FC<ColumnProps> = props => {
   let checked = data[0][xName];
   let attributeIndex = 0;
   const findAttributeTemp = data[0][x];
-  const chartRef = useRef();
+  const chartRef = useRef<any>();
 
   data.map(cur => {
     if (cur[x] === findAttributeTemp) attributeIndex += 1;
@@ -149,7 +145,7 @@ const Donut: React.FC<ColumnProps> = props => {
             position={`${x}*${y}`}
             color={[
               color[0],
-              (attribute, xName) => {
+              (attribute: any, xName: any) => {
                 for (let i = 0; i < attributeIndex; i++) {
                   if (attribute === data[i][yName]) {
                     if (xName !== checked) {
@@ -168,7 +164,7 @@ const Donut: React.FC<ColumnProps> = props => {
             style={[
               yName,
               {
-                radius: at => {
+                radius: (at: any) => {
                   const { chart } = chartRef.current;
                   const data = chart.get('geoms')[0]._attrs.data;
                   return at === data[data.length - 1].attribute
@@ -239,7 +235,7 @@ const Donut: React.FC<ColumnProps> = props => {
           alwaysShow={true}
           custom={true} // 自定义 tooltip 内容框
           showTooltipMarker={false}
-          onChange={obj => {
+          onChange={(obj: any) => {
             const { chart } = chartRef.current;
 
             const legend = chart.get('legendController').legends.bottom[0];
@@ -251,15 +247,15 @@ const Donut: React.FC<ColumnProps> = props => {
             checked = tooltipItems[0].origin.city;
 
             const map: any = {};
-            legendItems.forEach(function(item) {
+            legendItems.forEach(function(item: any) {
               map[item.name] = _.clone(item);
             });
             let count = 0;
-            tooltipItems.forEach(function(item) {
+            tooltipItems.forEach(function(item: any) {
               const value = item.value * 1;
               count += value;
             });
-            tooltipItems.forEach(function(item) {
+            tooltipItems.forEach(function(item: any) {
               const name = item.name;
               const value = item.value;
               const percent = ((value / count) * 100).toFixed(0);
@@ -278,7 +274,7 @@ const Donut: React.FC<ColumnProps> = props => {
 
         <Axis
           field="index"
-          label={text => {
+          label={(text: any) => {
             return {
               fontSize: px2hd(30),
               fill: '#AAAAAA',
@@ -306,7 +302,7 @@ const Donut: React.FC<ColumnProps> = props => {
           cancelable={false}
           unSelectStyle={false}
           selectStyle={false}
-          onEnd={ev => {
+          onEnd={() => {
             setTimeout(() => {
               const { chart } = chartRef.current;
               chart.repaint();

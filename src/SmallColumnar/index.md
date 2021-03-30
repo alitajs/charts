@@ -1,11 +1,13 @@
 ---
-title: 柱状图(数量少展示)
+title: 单柱状图
+group:
+  title: 单柱状图
 nav:
   title: 组件
   path: /components
 ---
 
-### 折线图
+### 单柱状图
 
 <code src="./demos/basic.tsx" />
 
