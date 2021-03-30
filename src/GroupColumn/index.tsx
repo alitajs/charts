@@ -63,6 +63,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         range: [0, 0.89],
       },
     },
+    ...reset
   } = props;
   const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
   const [showGuide, setShowGuide] = useState(true);
@@ -138,6 +139,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         animate
         colDefs={colDefs}
         padding={[px2hd(120), px2hd(74), px2hd(60), px2hd(120)]}
+        {...reset}
       >
         <Geometry
           type="interval"

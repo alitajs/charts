@@ -14,7 +14,6 @@ import {
   LineToolTipsViewProps,
 } from './PropsType';
 import './index.less';
-
 const prefixCls = 'alita-line';
 const LineBaisc: FC<LineBasicProps> = ({
   data = [],
@@ -33,6 +32,7 @@ const LineBaisc: FC<LineBasicProps> = ({
   x,
   y,
   onRenderToolTips,
+  ...reset
 }) => {
   if (!data) {
     return <p>data is undefined!</p>;
@@ -64,6 +64,7 @@ const LineBaisc: FC<LineBasicProps> = ({
           ...style,
         }}
         ref={chartsRef}
+        {...reset}
       >
         <LineToolTips
           {...toolTips}

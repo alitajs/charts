@@ -218,6 +218,7 @@ const Donut: React.FC<DountProps> = props => {
     color = [`${x}`, COLOR_MENU],
     sumText,
     sumTitle = '',
+    ...reset
   } = props;
 
   const log = useTracker(Donut.displayName, {
@@ -266,6 +267,7 @@ const Donut: React.FC<DountProps> = props => {
           data={newdate}
           colDefs={colDefs}
           pixelRatio={window.devicePixelRatio}
+          {...reset}
         >
           <Tooltip disable />
           <Legend

@@ -43,6 +43,7 @@ const StackColumn: FC<StackColumnProps> = props => {
         range: [0, 0.89],
       },
     },
+    ...reset
   } = props;
   const [newData, setNewData] = useState<StackColumnDataProps[]>([]);
   const [currentName, setCurrentName] = useState<string | number>(''); // 当前展示的数据
@@ -111,6 +112,7 @@ const StackColumn: FC<StackColumnProps> = props => {
         animate
         colDefs={colDefs}
         padding={[px2hd(60), px2hd(74), px2hd(200), px2hd(120)]}
+        {...reset}
       >
         <Geometry
           type="interval"

@@ -57,6 +57,7 @@ const Donut: React.FC<ColumnProps> = props => {
     y,
     yName = `${y}`,
     color = [`${x}`, ['#008EF9', '#1DCFE8', '#FFBB22', '#C9D0E7']],
+    ...reset
   } = props;
   if (!data) {
     return <p>data is undefined!</p>;
@@ -138,6 +139,7 @@ const Donut: React.FC<ColumnProps> = props => {
         pixelRatio={window.devicePixelRatio}
         padding={[px2hd(120), px2hd(80), px2hd(240), px2hd(120)]}
         ref={chartRef}
+        {...reset}
       >
         {isStack ? (
           <Geometry
