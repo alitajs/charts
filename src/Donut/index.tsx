@@ -247,13 +247,7 @@ const Donut: React.FC<DountProps> = props => {
 </div>`;
 
   return (
-    <div
-      style={{
-        backgroundColor: '#fff',
-        borderRadius: '0.16rem',
-        paddingBottom: '0.6rem',
-      }}
-    >
+    <div>
       <div>
         <Chart
           width={750}

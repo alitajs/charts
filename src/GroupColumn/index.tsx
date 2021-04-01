@@ -124,13 +124,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
   }, [data]);
 
   return (
-    <div
-      style={{
-        backgroundColor: '#fff',
-        borderRadius: '0.16rem',
-        paddingBottom: '0.6rem',
-      }}
-    >
+    <div>
       <Chart
         data={newData}
         width={750}

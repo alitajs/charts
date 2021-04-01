@@ -97,13 +97,7 @@ const StackColumn: FC<StackColumnProps> = props => {
   }
 
   return (
-    <div
-      style={{
-        backgroundColor: '#fff',
-        borderRadius: '0.16rem',
-        paddingBottom: '0.3rem',
-      }}
-    >
+    <div>
       <Chart
         data={newData}
         width={750}
