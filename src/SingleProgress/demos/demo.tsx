@@ -1,3 +1,8 @@
+/*
+ * @Descripttion:
+ * @Author: wll
+ * @Date: 2021-03-04 17:21:29
+ */
 import React, { FC } from 'react';
 import { SingleProgress } from '@alitajs/charts';
 import './index.less';
@@ -69,10 +74,7 @@ const Demo: FC<DemoProps> = props => {
                   </div>
                 }
                 rightNode={
-                  <div style={{ marginLeft: 20 }}>
-                    {' '}
-                    {((count / total) as any).toFixed(2) * 100}%
-                  </div>
+                  <div>{((count / total) as any).toFixed(2) * 100}%</div>
                 }
               />
             </div>
