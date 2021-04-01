@@ -16,7 +16,7 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
   ...reset
 }) => {
   return (
-    <div className={`${prefixCls}`}>
+    <div className={prefixCls}>
       <Chart
         data={data}
         pixelRatio={window.devicePixelRatio}
