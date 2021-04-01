@@ -13,6 +13,7 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
   x,
   y,
   aliasColor = 'colorIndex',
+  ...reset
 }) => {
   return (
     <div className={`${prefixCls}`}>
@@ -26,6 +27,7 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
           height: '100%',
           ...style,
         }}
+        {...reset}
       >
         <Geometry
           type="interval"

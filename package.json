@@ -1,13 +1,13 @@
 {
   "name": "@alitajs/charts",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "scripts": {
     "start": "dumi dev",
     "build": "dumi build",
     "docs:deploy": "gh-pages -d dist",
     "compile": "father-build",
     "deploy": "npm run build && npm run docs:deploy",
-    "release": "npm run build && npm publish",
+    "release": "npm run compile && npm publish",
     "prettier": "prettier --write \"**/*.{js,jsx,tsx,ts,less,md,json}\"",
     "entry": "node ./scripts/entry.js",
     "test": "umi-test",
