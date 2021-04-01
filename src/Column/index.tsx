@@ -21,7 +21,7 @@ interface ColumnProps {
    * @default stack
    */
   type?: 'stack' | 'dodge';
-  title?: string;
+
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -50,7 +50,6 @@ const Donut: React.FC<ColumnProps> = props => {
   const {
     data,
     type = 'stack',
-    title,
     colDefs = {},
     x,
     xName = `${x}`,
