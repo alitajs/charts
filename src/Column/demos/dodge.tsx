@@ -36,7 +36,6 @@ const DemoChart: React.FC<ColumnProps> = () => {
     <>
       <Column
         data={data}
-        title="卡片标题"
         type="dodge"
         x="index"
         xName="city"

@@ -52,7 +52,6 @@ const DemoChart: React.FC<ColumnProps> = () => {
     <>
       <Column
         data={data}
-        title="卡片标题"
         type="stack"
         x="index"
         xName="city"

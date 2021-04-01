@@ -21,7 +21,7 @@ interface ColumnProps {
    * @default stack
    */
   type?: 'stack' | 'dodge';
-  title?: string;
+
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -50,7 +50,6 @@ const Donut: React.FC<ColumnProps> = props => {
   const {
     data,
     type = 'stack',
-    title,
     colDefs = {},
     x,
     xName = `${x}`,
@@ -111,26 +110,7 @@ const Donut: React.FC<ColumnProps> = props => {
   }, []);
 
   return (
-    <div
-      style={{
-        margin: '0.24rem',
-        backgroundColor: '#FFF',
-        borderRadius: '0.16rem',
-        paddingBottom: '0.6rem',
-      }}
-    >
-      {title && (
-        <div
-          style={{
-            fontSize: '0.32rem',
-            color: '#333333',
-            padding: '0.32rem',
-            fontWeight: 500,
-          }}
-        >
-          {title}
-        </div>
-      )}
+    <div>
       <Chart
         width={726}
         height={isStack ? 726 : 850}
