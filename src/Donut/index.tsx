@@ -34,10 +34,6 @@ interface DountProps {
    */
   type?: 'normal' | 'table';
   /**
-   * 标题
-   */
-  title?: string;
-  /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
   colDefs?: ChartProps['colDefs'];
@@ -211,7 +207,6 @@ const Donut: React.FC<DountProps> = props => {
   const {
     data,
     type = 'normal',
-    title,
     colDefs = {},
     x,
     y,
@@ -259,7 +254,6 @@ const Donut: React.FC<DountProps> = props => {
         paddingBottom: '0.6rem',
       }}
     >
-      {title && <div className={`${prefixCls}-title`}>{title}</div>}
       <div>
         <Chart
           width={750}
