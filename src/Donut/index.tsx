@@ -274,7 +274,7 @@ const Donut: React.FC<DountProps> = props => {
         wordSpace={px2hd(18)}
         itemMarginBottom={px2hd(36)}
         itemGap={px2hd(150)}
-        itemWidth={px2hd(240)}
+        itemWidth={px2hd(180)}
         nameStyle={{
           fontSize: px2hd(30), // 文本大小
           fill: '#999',
