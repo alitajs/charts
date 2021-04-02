@@ -9,6 +9,8 @@ nav:
 
 ### 层叠单柱状图
 
+注意：<font color="red">该组件已放弃维护,请使用`GroupColumn`,`StackColumn`组件代替</font>
+
 <code src="./demos/index.tsx" />
 
 ### 双柱状图
