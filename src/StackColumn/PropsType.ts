@@ -1,5 +1,5 @@
 import { ChartProps } from '@alitajs/f2/dist/Chart';
-
+import { CSSProperties } from 'react';
 export interface StackColumnDataProps {
   [key: string]: string | number;
 }
@@ -45,4 +45,9 @@ export interface StackColumnProps {
       }}
    */
   colDefs?: ChartProps['colDefs'];
+
+  /*
+   * style
+   */
+  style?: CSSProperties;
 }

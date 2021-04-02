@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { CSSProperties } from 'react';
 import {
   Chart,
   Geometry,
@@ -63,6 +63,11 @@ interface DountProps {
    * @default ['分类', '占比', '数量']
    */
   tableHeader?: string[];
+
+  /*
+   * style
+   */
+  style?: CSSProperties;
 }
 
 interface TableLegendProps
@@ -213,6 +218,7 @@ const Donut: React.FC<DountProps> = props => {
     color = [`${x}`, COLOR_MENU],
     sumText,
     sumTitle = '',
+    style,
     ...reset
   } = props;
 
@@ -231,7 +237,7 @@ const Donut: React.FC<DountProps> = props => {
   data.map((obj: any, index: number) => {
     legendItems.push({
       name: obj[x],
-      value: obj[y].toFixed(2),
+      value: parseFloat(obj[y]).toFixed(2),
       marker: {
         symbol: 'circle',
         fill: color[1][index],
@@ -247,65 +253,65 @@ const Donut: React.FC<DountProps> = props => {
 </div>`;
 
   return (
-    <div>
-      <div>
-        <Chart
-          width={750}
-          height={isTableLegend ? 500 : 700}
-          data={newdate}
-          colDefs={colDefs}
-          pixelRatio={window.devicePixelRatio}
-          {...reset}
-        >
-          <Tooltip disable />
-          <Legend
-            disable={isTableLegend}
-            custom={true}
-            position="bottom"
-            align="center"
-            wordSpace={px2hd(18)}
-            itemMarginBottom={px2hd(36)}
-            itemGap={px2hd(150)}
-            itemWidth={px2hd(240)}
-            nameStyle={{
-              fontSize: px2hd(30), // 文本大小
-              fill: '#999',
-            }}
-            joinString=" "
-            titleStyle={{
-              textAlign: 'start',
-            }}
-            valueStyle={{
-              fill: '#333', // 文本的颜色
-              fontSize: px2hd(30), // 文本大小
-              lineHeight: 34,
-            }}
-            items={legendItems}
-            onClick={(ev: any) => {
-              const { clickedItem, selectShapeByLegend } = ev;
-              const dataName = clickedItem.get('name');
-              const onEnd = (clickedShape: any, coord: any, canvas: any) =>
-                drawLabel(clickedShape, coord, canvas, x, y, total);
-              selectShapeByLegend(dataName, onEnd);
-              log('onClick');
-            }}
-          />
-          <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
-          <Axis disable />
-          <Geometry
-            type="interval"
-            position={`a*${y}`}
-            color={color}
-            adjust="stack"
-            size={px2hd(60)}
-          />
-          <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
-          {isTableLegend && (
-            <TableLegend {...props} color={color} total={total} log={log} />
-          )}
-        </Chart>
-      </div>
-    </div>
+    <Chart
+      style={{
+        width: '100%',
+        height: '100%',
+        ...style,
+      }}
+      height={isTableLegend ? 500 : 700}
+      data={newdate}
+      colDefs={colDefs}
+      pixelRatio={window.devicePixelRatio}
+      {...reset}
+    >
+      <Tooltip disable />
+      <Legend
+        disable={isTableLegend}
+        custom={true}
+        position="bottom"
+        align="center"
+        wordSpace={px2hd(18)}
+        itemMarginBottom={px2hd(36)}
+        itemGap={px2hd(150)}
+        itemWidth={px2hd(240)}
+        nameStyle={{
+          fontSize: px2hd(30), // 文本大小
+          fill: '#999',
+        }}
+        joinString=" "
+        titleStyle={{
+          textAlign: 'start',
+        }}
+        valueStyle={{
+          fill: '#333', // 文本的颜色
+          fontSize: px2hd(30), // 文本大小
+          lineHeight: 34,
+        }}
+        items={legendItems}
+        onClick={(ev: any) => {
+          const { clickedItem, selectShapeByLegend } = ev;
+          const dataName = clickedItem.get('name');
+          const onEnd = (clickedShape: any, coord: any, canvas: any) =>
+            drawLabel(clickedShape, coord, canvas, x, y, total);
+          selectShapeByLegend(dataName, onEnd);
+          log('onClick');
+        }}
+      />
+      <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
+      <Axis disable />
+      <Geometry
+        type="interval"
+        position={`a*${y}`}
+        color={color}
+        adjust="stack"
+        size={px2hd(60)}
+      />
+      <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
+      {isTableLegend && (
+        <TableLegend {...props} color={color} total={total} log={log} />
+      )}
+    </Chart>
   );
 };
 Donut.displayName = 'Donut';

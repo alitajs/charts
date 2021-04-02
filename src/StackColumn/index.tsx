@@ -34,6 +34,7 @@ const StackColumn: FC<StackColumnProps> = props => {
     data,
     legendParams = [],
     x,
+    style,
     color = COLOR_MENU,
     colDefs = {
       index: {
@@ -100,7 +101,11 @@ const StackColumn: FC<StackColumnProps> = props => {
     <div>
       <Chart
         data={newData}
-        width={750}
+        style={{
+          width: '100%',
+          height: '100%',
+          ...style,
+        }}
         height={600}
         pixelRatio={window.devicePixelRatio}
         animate

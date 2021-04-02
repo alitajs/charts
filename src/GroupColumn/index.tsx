@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState, CSSProperties } from 'react';
 import {
   Chart,
   Geometry,
@@ -47,12 +47,18 @@ interface GroupColumnProps {
       }}
    */
   colDefs?: ChartProps['colDefs'];
+
+  /*
+   * style
+   */
+  style?: CSSProperties;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
   const {
     data,
     x,
+    style,
     legendParams = [],
     color = COLOR_MENU,
     colDefs = {
@@ -127,8 +133,12 @@ const GroupColumn: FC<GroupColumnProps> = props => {
     <div>
       <Chart
         data={newData}
-        width={750}
         height={500}
+        style={{
+          width: '100%',
+          height: '100%',
+          ...style,
+        }}
         pixelRatio={window.devicePixelRatio}
         animate
         colDefs={colDefs}
