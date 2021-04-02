@@ -175,7 +175,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
             textBaseline: 'middle', // 文本基准线，可取 top middle bottom，默认为middle
             lineHeight: px2hd(34),
           }}
-          itemWidth={px2hd(200)}
+          itemWidth={px2hd(160)}
           offsetX={px2hd(50)}
           offsetY={px2hd(20)}
         />

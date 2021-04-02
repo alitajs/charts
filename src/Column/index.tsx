@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, CSSProperties } from 'react';
 import _ from 'lodash';
 import {
   Chart,
@@ -45,10 +45,16 @@ interface ColumnProps {
    * @default ['x', ['#008EF9', '#1DCFE8', '#FFBB22', '#C9D0E7']]
    */
   color?: any[];
+
+  /*
+   * style
+   */
+  style?: CSSProperties;
 }
 const Donut: React.FC<ColumnProps> = props => {
   const {
     data,
+    style,
     type = 'stack',
     colDefs = {},
     x,
@@ -112,7 +118,11 @@ const Donut: React.FC<ColumnProps> = props => {
   return (
     <div>
       <Chart
-        width={726}
+        style={{
+          width: '100%',
+          height: '100%',
+          ...style,
+        }}
         height={isStack ? 726 : 850}
         data={data}
         colDefs={colDefs}
