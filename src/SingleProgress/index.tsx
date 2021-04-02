@@ -54,7 +54,7 @@ const SingleProgress: FC<SingleProgressPros> = props => {
             style={{ width: spanWidth + '%', backgroundColor: color }}
           ></span>
         </div>
-        {rightNode}
+        <div className={`${prefixCls}-right-node`}>{rightNode}</div>
       </div>
     </div>
   );
