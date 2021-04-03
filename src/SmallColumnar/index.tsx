@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Chart, Geometry, Axis, px2hd, Guide } from '@alitajs/f2';
+import { Chart, Geometry, Axis, px2hd, Guide, Legend } from '@alitajs/f2';
 import { SmallColumnarProps } from './PropsType';
 import './index.less';
 
@@ -8,11 +8,11 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
   data = [],
   padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
   colDefs,
-  color = ['#F36A3F', '#67CA83'],
+  color = '#2689F4',
   style = {},
   x,
   y,
-  aliasColor = 'colorIndex',
+  aliasColor = 'color',
   ...reset
 }) => {
   return (
@@ -32,15 +32,9 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
         <Geometry
           type="interval"
           position={`${x}*${y}`}
-          shape={'smooth'}
-          color={[
-            aliasColor,
-            (value: number) => {
-              return color[value];
-            },
-          ]}
+          shape={'dodge'}
           style={{ radius: px2hd(11), width: px2hd(20) }}
-          adjust="dodge"
+          adjust="stack"
           pixelRatio={window.devicePixelRatio}
         />
         <Axis
@@ -48,7 +42,9 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
           line={null}
           label={() => {
             const ctf = {
-              fontSize: px2hd(30),
+              fontSize: px2hd(22),
+              textAlign: 'end',
+              fill: '#999',
             };
             return ctf;
           }}
@@ -68,7 +64,7 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
               key={item[y]}
               type="text"
               content={item[y]}
-              style={{ fill: '#333', fontSize: px2hd(24), fontWeight: 'bold' }}
+              style={{ fill: '#333', fontSize: px2hd(22), fontWeight: 'bold' }}
               position={[item[x], item[y]]}
               offsetX={-px2hd(20)}
               offsetY={-px2hd(20)}

@@ -28,9 +28,9 @@ export interface SmallColumnarProps {
   y: string;
   /**
    * @description 柱状图颜色值
-   * @default ['#F36A3F','#67CA83']
+   * @default #2689F4
    */
-  color?: string[];
+  color?: string;
   /**
    * @description 每个柱状图对应颜色的字段名
    * @default colorIndex
