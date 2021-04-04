@@ -10,20 +10,31 @@ import {
   px2hd,
   F2,
 } from '@alitajs/f2';
+import classnames from 'classnames';
 import SumBy from 'lodash/sumBy';
 import { withError, useTracker } from '@alitajs/tracker';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import { LegendItem } from '@antv/f2/types/Legend';
+import { TableLegend, RightLegend } from './components';
 import './index.less';
 
-const { Util, G } = F2;
+const { G } = F2;
 const { Group } = G;
 
-const prefixCls = 'alitajs-charts';
+export const prefixCls = 'alitajs-charts';
 
-const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
+export const COLOR_MENU = [
+  '#5E5CE6',
+  '#2689F4',
+  '#4DCB75',
+  '#74D2B6',
+  '#E0F0FD',
+  '#F36A3F',
+  '#E58A3C',
+  '#F6C65D',
+];
 
-interface DountProps {
+export interface DountProps {
   /**
    * 图表展示数据
    */
@@ -32,7 +43,7 @@ interface DountProps {
    * 图表类型
    * @default normal
    */
-  type?: 'normal' | 'table';
+  type?: 'normal' | 'table' | 'legBottom';
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -80,14 +91,15 @@ interface TableLegendProps
   log: any;
 }
 
-function drawLabel(
+export const drawLabel = (
   shape: any,
   coord: any,
   canvas: any,
   resX: string,
   resY: string,
   total: number,
-) {
+  showText = true,
+) => {
   const center = coord.center;
   const origin = shape.get('origin');
   const points = origin.points;
@@ -104,108 +116,54 @@ function drawLabel(
   });
 
   const group = new Group();
-  group.addShape('Line', {
-    attrs: {
-      x1: point1.x,
-      y1: point1.y,
-      x2: point2.x,
-      y2: point2.y,
-      stroke: '#5E5CE6',
-    },
-  });
+  if (showText) {
+    group.addShape('Line', {
+      attrs: {
+        x1: point1.x,
+        y1: point1.y,
+        x2: point2.x,
+        y2: point2.y,
+        stroke: '#5E5CE6',
+      },
+    });
 
-  const text = group.addShape('Text', {
-    attrs: {
-      x: point2.x,
-      y: point2.y,
-      text:
-        origin._origin[resX] +
-        ' ' +
-        (origin._origin[resY] / total).toFixed(2) +
-        '%',
-      fill: '#5E5CE6',
-      fontSize: px2hd(24),
-      textAlign: 'start',
-      textBaseline: 'bottom',
-    },
-  });
-  const textWidth = text.getBBox().width;
-  const baseLine = group.addShape('Line', {
-    attrs: {
-      x1: point2.x,
-      y1: point2.y,
-      x2: point2.x,
-      y2: point2.y,
-      stroke: '#5E5CE6',
-    },
-  });
-  if (point2.x > center.x) {
-    baseLine.attr('x2', point2.x + textWidth);
-  } else if (point2.x < center.x) {
-    text.attr('textAlign', 'end');
-    baseLine.attr('x2', point2.x - textWidth);
-  } else {
-    text.attr('textAlign', 'center');
-    text.attr('textBaseline', 'top');
+    const text = group.addShape('Text', {
+      attrs: {
+        x: point2.x,
+        y: point2.y,
+        text:
+          origin._origin[resX] +
+          ' ' +
+          (origin._origin[resY] / total).toFixed(2) +
+          '%',
+        fill: '#5E5CE6',
+        fontSize: px2hd(24),
+        textAlign: 'start',
+        textBaseline: 'bottom',
+      },
+    });
+    const textWidth = text.getBBox().width;
+    const baseLine = group.addShape('Line', {
+      attrs: {
+        x1: point2.x,
+        y1: point2.y,
+        x2: point2.x,
+        y2: point2.y,
+        stroke: '#5E5CE6',
+      },
+    });
+    if (point2.x > center.x) {
+      baseLine.attr('x2', point2.x + textWidth);
+    } else if (point2.x < center.x) {
+      text.attr('textAlign', 'end');
+      baseLine.attr('x2', point2.x - textWidth);
+    } else {
+      text.attr('textAlign', 'center');
+      text.attr('textBaseline', 'top');
+    }
   }
   canvas.add(group);
   shape.label = group;
-}
-
-/**
- * 表格图例
- * @param e
- */
-const TableLegend = (e: TableLegendProps) => {
-  const {
-    chart,
-    tableHeader = [],
-    data = [],
-    x,
-    color = [`${x}`, COLOR_MENU],
-    y,
-    total,
-    log,
-  } = e;
-  return (
-    <div className={`${prefixCls}-donut-table`}>
-      <div className={`${prefixCls}-donut-table-header`}>
-        <div className={`${prefixCls}-donut-table-header-type`}>
-          {tableHeader[0]}
-        </div>
-        <div className={`${prefixCls}-donut-table-header-ratio`}>
-          {tableHeader[1]}
-        </div>
-        <div className={`${prefixCls}-donut-table-header-num`}>
-          {tableHeader[2]}
-        </div>
-      </div>
-      <div>
-        {data.map((item: any, index: number) => (
-          <div
-            className={`${prefixCls}-donut-table-body`}
-            key={item[x]}
-            onClick={() => {
-              chart?.get('selectShapeByLegend')(item[x]);
-              log('onClick');
-            }}
-          >
-            <div className={`${prefixCls}-donut-table-body-type`}>
-              <div
-                className={`${prefixCls}-donut-table-dot`}
-                style={{ backgroundColor: color[1][index] }}
-              />
-              {item[x]}
-            </div>
-            <div className={`${prefixCls}-donut-table-body-ratio`}>
-              {`${((parseInt(item[y], 10) / total) * 100).toFixed(0)}%`}
-            </div>
-            <div className={`${prefixCls}-donut-table-body-num`}>{item[y]}</div>
-          </div>
-        ))}
-      </div>
-    </div>
-  );
 };
 
 const Donut: React.FC<DountProps> = props => {
@@ -229,21 +187,26 @@ const Donut: React.FC<DountProps> = props => {
   const total = SumBy(data, y);
 
   const isTableLegend = type === 'table';
+  const isRightLegend = type === 'normal';
   if (!data) {
     return <p>data is undefined!</p>;
   }
   const newdate = [] as any[];
   const legendItems = [] as LegendItem[];
   data.map((obj: any, index: number) => {
-    legendItems.push({
+    let singleLegend = {
       name: obj[x],
-      value: parseFloat(obj[y]).toFixed(2),
+      value: parseFloat(obj[y]),
       marker: {
         symbol: 'circle',
         fill: color[1][index],
         radius: px2hd(8),
       },
-    });
+    } as any;
+
+    if (`${obj[y]}`.indexOf('.'))
+      singleLegend.value = parseFloat(obj[y]).toFixed(2);
+    legendItems.push(singleLegend);
     newdate.push({ ...obj });
   });
 
@@ -253,65 +216,75 @@ const Donut: React.FC<DountProps> = props => {
 </div>`;
 
   return (
-    <Chart
-      style={{
-        width: '100%',
-        height: '100%',
-        ...style,
-      }}
-      height={isTableLegend ? 500 : 700}
-      data={newdate}
-      colDefs={colDefs}
-      pixelRatio={window.devicePixelRatio}
-      {...reset}
+    <div
+      className={classnames({
+        [`${prefixCls}-donut`]: true,
+        [`${prefixCls}-donut-leg-right`]: type === 'normal',
+      })}
     >
-      <Tooltip disable />
-      <Legend
-        disable={isTableLegend}
-        custom={true}
-        position="bottom"
-        align="center"
-        wordSpace={px2hd(18)}
-        itemMarginBottom={px2hd(36)}
-        itemGap={px2hd(150)}
-        itemWidth={px2hd(180)}
-        nameStyle={{
-          fontSize: px2hd(30), // 文本大小
-          fill: '#999',
+      <Chart
+        style={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: '#fff',
+          ...style,
         }}
-        joinString=" "
-        titleStyle={{
-          textAlign: 'start',
-        }}
-        valueStyle={{
-          fill: '#333', // 文本的颜色
-          fontSize: px2hd(30), // 文本大小
-          lineHeight: 34,
-        }}
-        items={legendItems}
-        onClick={(ev: any) => {
-          const { clickedItem, selectShapeByLegend } = ev;
-          const dataName = clickedItem.get('name');
-          const onEnd = (clickedShape: any, coord: any, canvas: any) =>
-            drawLabel(clickedShape, coord, canvas, x, y, total);
-          selectShapeByLegend(dataName, onEnd);
-          log('onClick');
-        }}
-      />
-      <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
-      <Axis disable />
-      <Geometry
-        type="interval"
-        position={`a*${y}`}
-        color={color}
-        adjust="stack"
-        size={px2hd(60)}
-      />
-      <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
-      {isTableLegend && (
-        <TableLegend {...props} color={color} total={total} log={log} />
-      )}
-    </Chart>
+        data={newdate}
+        colDefs={colDefs}
+        pixelRatio={window.devicePixelRatio}
+        {...reset}
+      >
+        <Tooltip disable />
+        <Legend
+          disable={type !== 'legBottom'}
+          custom={true}
+          position={type === 'normal' ? 'right' : 'bottom'}
+          align="center"
+          wordSpace={px2hd(18)}
+          itemMarginBottom={px2hd(36)}
+          itemGap={px2hd(150)}
+          itemWidth={px2hd(180)}
+          nameStyle={{
+            fontSize: px2hd(30), // 文本大小
+            fill: '#999',
+          }}
+          joinString=" "
+          titleStyle={{
+            textAlign: 'start',
+          }}
+          valueStyle={{
+            fill: '#333', // 文本的颜色
+            fontSize: px2hd(30), // 文本大小
+            lineHeight: 34,
+          }}
+          items={legendItems}
+          onClick={(ev: any) => {
+            const { clickedItem, selectShapeByLegend } = ev;
+            const dataName = clickedItem.get('name');
+            const onEnd = (clickedShape: any, coord: any, canvas: any) =>
+              drawLabel(clickedShape, coord, canvas, x, y, total);
+            selectShapeByLegend(dataName, onEnd);
+            log('donut_legend_bottom_click');
+          }}
+        />
+        <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
+        <Axis disable />
+        <Geometry
+          type="interval"
+          position={`a*${y}`}
+          color={color}
+          adjust="stack"
+          size={px2hd(60)}
+        />
+        <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
+        {isTableLegend && (
+          <TableLegend {...props} color={color} total={total} log={log} />
+        )}
+        {isRightLegend && (
+          <RightLegend {...props} color={color} total={total} log={log} />
+        )}
+      </Chart>
+    </div>
   );
 };
 Donut.displayName = 'Donut';

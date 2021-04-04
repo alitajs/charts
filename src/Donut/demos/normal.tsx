@@ -7,26 +7,14 @@ interface DountProps {
 }
 const DemoChart: React.FC<DountProps> = () => {
   const data = [
-    {
-      name: '余额',
-      percent: 2423.0,
-    },
-    {
-      name: '理财产品',
-      percent: 423.0,
-    },
-    {
-      name: '黄金',
-      percent: 1223.0,
-    },
-    {
-      name: '余额宝',
-      percent: 1423.0,
-    },
-    {
-      name: '基金',
-      percent: 323.0,
-    },
+    { name: '预警', percent: 2423 },
+    { name: '客户', percent: 423 },
+    { name: '营销', percent: 1223 },
+    { name: '商机', percent: 1423 },
+    { name: '合同', percent: 323 },
+    { name: '订单', percent: 323 },
+    { name: '日常', percent: 323 },
+    { name: '服务', percent: 323 },
   ];
 
   return (
@@ -36,8 +24,9 @@ const DemoChart: React.FC<DountProps> = () => {
         type="normal"
         x="name"
         y="percent"
-        sumText="5782.70"
+        sumText="333"
         sumTitle="总资产"
+        height={500}
       />
     </>
   );

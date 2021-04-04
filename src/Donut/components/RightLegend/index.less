@@ -1,0 +1,36 @@
+@import '../../index.less';
+
+.@{prefixCls} {
+  &-donut-leg {
+    font-size: 13 * @hd;
+    font-weight: 500;
+    color: #999999;
+    line-height: 19 * @hd;
+    padding: 16 * @hd 0;
+    background-color: #fff;
+    width: 50%;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    &-item {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      padding: 4 * @hd;
+    }
+
+    &-marker {
+      width: 8 * @hd;
+      height: 8 * @hd;
+      flex-shrink: 0;
+    }
+
+    &-value {
+      font-size: 12 * @hd;
+      font-weight: 400;
+      color: #333333;
+      line-height: 17 * @hd;
+      padding-left: 8 * @hd;
+    }
+  }
+}
