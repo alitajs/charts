@@ -10,79 +10,13 @@
     padding: 16 * @hd;
   }
 
-  &-donut-table {
-    font-size: 13 * @hd;
-    font-weight: 500;
-    color: #999999;
-    line-height: 19 * @hd;
-    padding: 16 * @hd;
-
-    &-header {
+  &-donut {
+    &-leg-right {
       display: flex;
-      margin-bottom: 20 * @hd;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
 
-      &-type {
-        width: 25%;
-        text-align: left;
-        justify-content: flex-start;
-        padding-left: 24 * @hd;
+      canvas {
+        width: 50% !important;
       }
-
-      &-ratio {
-        width: 45%;
-      }
-
-      &-num {
-        width: 30%;
-      }
-    }
-
-    &-body {
-      display: flex;
-      height: 50 * @hd;
-      background: rgba(247, 247, 247, 0.51);
-      border-radius: 30 * @hd;
-      margin-bottom: 5 * @hd;
-      text-align: center;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 13 * @hd;
-      font-weight: 500;
-      color: rgba(0, 0, 0, 0.85);
-      line-height: 14 * @hd;
-
-      &-type {
-        width: 25%;
-        justify-content: flex-start;
-        text-align: left;
-        padding-left: 24 * @hd;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        display: flex;
-        align-items: center;
-        justify-content: flex-start;
-      }
-
-      &-ratio {
-        width: 45%;
-      }
-
-      &-num {
-        width: 30%;
-      }
-    }
-
-    &-dot {
-      width: 6 * @hd;
-      height: 6 * @hd;
-      border-radius: 5 * @hd;
-      margin-right: 4 * @hd;
     }
   }
 }

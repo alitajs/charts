@@ -18,13 +18,12 @@ const DemoChart: React.FC<DountProps> = () => {
     <>
       <Donut
         data={data}
-        type="table"
+        type="legBottom"
         x="name"
         y="percent"
         sumText="5782.70"
         sumTitle="总资产"
-        tableHeader={['分类', '占比', '金额']}
-        height={500}
+        height={700}
       />
     </>
   );

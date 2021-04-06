@@ -7,9 +7,13 @@ nav:
   path: /components
 ---
 
+### 图例在底部环形图
+
+<code src="./demos/legBottom.tsx" />
+
 ### 图例可点击环形图
 
-<code src="./demos/index.tsx" />
+<code src="./demos/normal.tsx" />
 
 ### 表格图例环形图
 
