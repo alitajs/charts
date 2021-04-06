@@ -278,7 +278,7 @@ const Donut: React.FC<DountProps> = props => {
           adjust="stack"
           size={px2hd(60)}
         />
-        <Guide type="html" position={() => ['50%', '45%']} html={htmlStr} />
+        <Guide type="html" position={() => ['50%', '50%']} html={htmlStr} />
         {isTableLegend && (
           <TableLegend {...props} color={color} total={total} log={log} />
         )}
