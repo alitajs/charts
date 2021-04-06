@@ -210,9 +210,11 @@ const Donut: React.FC<DountProps> = props => {
     newdate.push({ ...obj });
   });
 
-  const htmlStr = `<div style="width: 2.5rem;height: 0.4rem;text-align: center;">
-  <div style="font-size: 0.42rem;color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
-  <div style="font-size: 0.24rem;color:#999999;">${sumTitle}</div>
+  const htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
+  <div style="font-size:${px2hd(
+    42,
+  )};color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
+  <div style="font-size: ${px2hd(12)};color:#999999;">${sumTitle}</div>
 </div>`;
 
   return (
