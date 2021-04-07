@@ -4,8 +4,8 @@ import { prefixCls, DountProps, COLOR_MENU, drawLabel } from '../..';
 import './index.less';
 
 interface TableLegendProps extends DountProps {
-  chart: Chart;
-  tableHeader: DountProps['tableHeader'];
+  chart?: Chart;
+  tableHeader?: DountProps['tableHeader'];
   total: number;
   log: any;
 }
