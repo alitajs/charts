@@ -12,7 +12,7 @@ interface DemoProps {}
 
 const Demo: FC<DemoProps> = props => {
   const data = [
-    { total: 100, count: 65, color: '#F36A3F', text: '本月客户建档率' },
+    { total: 100, count: 114, color: '#F36A3F', text: '本月客户建档率' },
     { total: 100, count: 23, color: '#0089FF', text: '本月线索转化率' },
     { total: 100, count: 12, color: '#01BB7F', text: '本月商机转化率' },
   ];
@@ -74,7 +74,7 @@ const Demo: FC<DemoProps> = props => {
                   </div>
                 }
                 rightNode={
-                  <div>{((count / total) as any).toFixed(2) * 100}%</div>
+                  <div style={{ width: '60px' }}>{(count * 100) / total}%</div>
                 }
               />
             </div>
