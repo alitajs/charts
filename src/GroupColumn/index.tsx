@@ -151,7 +151,11 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           adjust={{
             type: 'dodge',
           }}
-          size={px2hd(80 / legendParams.length)}
+          size={
+            legendParams.length === 1
+              ? px2hd(40)
+              : px2hd(80 / legendParams.length)
+          }
           color={['name', color]}
           style={{
             radius: [px2hd(8), px2hd(8), 0, 0],
