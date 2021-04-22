@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Donut } from '@alitajs/charts';
+import { px2hd } from '@alitajs/f2';
 
 interface DountProps {
   data: any[];
@@ -24,9 +25,13 @@ const DemoChart: React.FC<DountProps> = () => {
         type="normal"
         x="name"
         y="percent"
-        sumText="333"
-        sumTitle="总资产"
         height={500}
+        htmlStr={`<div style="width: ${px2hd(125)}px;text-align: center;">
+          <div style="font-size:${px2hd(
+            42,
+          )};color:#333333;font-weight: bold;word-break: break-all;">可自定义</div>
+          <div style="font-size: ${px2hd(12)};color:#999999;">总资产</div>
+        </div>`}
       />
     </>
   );

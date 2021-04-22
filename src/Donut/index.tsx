@@ -70,15 +70,29 @@ export interface DountProps {
    */
   sumTitle?: string;
   /**
+   * 点击图例是否会显示 label 文字
+   * @default true
+   */
+  drawLabelFlag?: boolean;
+  /**
    * 表格自定义标题
    * @default ['分类', '占比', '数量']
    */
   tableHeader?: string[];
-
   /*
    * style
    */
   style?: CSSProperties;
+  /**
+   * 环形图内部内容自定义
+   * @default `<div style="width: ${px2hd(125)}px;text-align: center;">
+        <div style="font-size:${px2hd(
+          42,
+        )};color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
+        <div style="font-size: ${px2hd(12)};color:#999999;">${sumTitle}</div>
+      </div>`
+   */
+  htmlStr?: string;
 }
 
 interface TableLegendProps
@@ -177,6 +191,13 @@ const Donut: React.FC<DountProps> = props => {
     sumText,
     sumTitle = '',
     style,
+    drawLabelFlag = true,
+    htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
+  <div style="font-size:${px2hd(
+    42,
+  )};color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
+  <div style="font-size: ${px2hd(12)};color:#999999;">${sumTitle}</div>
+</div>`,
     ...reset
   } = props;
 
@@ -209,13 +230,6 @@ const Donut: React.FC<DountProps> = props => {
     legendItems.push(singleLegend);
     newdate.push({ ...obj });
   });
-
-  const htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
-  <div style="font-size:${px2hd(
-    42,
-  )};color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
-  <div style="font-size: ${px2hd(12)};color:#999999;">${sumTitle}</div>
-</div>`;
 
   return (
     <div
@@ -264,7 +278,15 @@ const Donut: React.FC<DountProps> = props => {
             const { clickedItem, selectShapeByLegend } = ev;
             const dataName = clickedItem.get('name');
             const onEnd = (clickedShape: any, coord: any, canvas: any) =>
-              drawLabel(clickedShape, coord, canvas, x, y, total);
+              drawLabel(
+                clickedShape,
+                coord,
+                canvas,
+                x,
+                y,
+                total,
+                drawLabelFlag,
+              );
             selectShapeByLegend(dataName, onEnd);
             log('donut_legend_bottom_click');
           }}

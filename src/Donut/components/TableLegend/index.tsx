@@ -20,6 +20,7 @@ const TableLegend: FC<TableLegendProps> = props => {
     y,
     total,
     log,
+    drawLabelFlag = true,
   } = props;
   return (
     <div className={`${prefixCls}-donut-table`}>
@@ -42,7 +43,15 @@ const TableLegend: FC<TableLegendProps> = props => {
             onClick={() => {
               const selectShapeByLegend = chart?.get('selectShapeByLegendName');
               const onEnd = (clickedShape: any, coord: any, canvas: any) =>
-                drawLabel(clickedShape, coord, canvas, x, y, total);
+                drawLabel(
+                  clickedShape,
+                  coord,
+                  canvas,
+                  x,
+                  y,
+                  total,
+                  drawLabelFlag,
+                );
               selectShapeByLegend(item[x], onEnd);
               log('donut_table_legend_click');
             }}
