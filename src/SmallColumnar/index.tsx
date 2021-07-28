@@ -8,11 +8,9 @@ const SmallColumnar: FC<SmallColumnarProps> = ({
   data = [],
   padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
   colDefs,
-  color = '#2689F4',
   style = {},
   x,
   y,
-  aliasColor = 'color',
   ...reset
 }) => {
   return (

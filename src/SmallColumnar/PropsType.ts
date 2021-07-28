@@ -11,7 +11,7 @@ export interface SmallColumnarProps {
   /**
    * @description 数据记录的度量。
    */
-  colDefs: ChartProps['colDefs'];
+  colDefs?: ChartProps['colDefs'];
   /**
    * @description canvas边距
    * @default [px2hd(90), px2hd(30), 'auto', 'auto']
@@ -26,14 +26,4 @@ export interface SmallColumnarProps {
    * @description 将y轴数据值映射到图形的位Y轴上的字段名
    */
   y: string;
-  /**
-   * @description 柱状图颜色值
-   * @default #2689F4
-   */
-  color?: string;
-  /**
-   * @description 每个柱状图对应颜色的字段名
-   * @default colorIndex
-   */
-  aliasColor?: string;
 }

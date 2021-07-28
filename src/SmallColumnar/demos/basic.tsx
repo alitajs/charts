@@ -48,13 +48,7 @@ const Demo: FC<DemoProps> = props => {
           <div className={styles.title}>卡片标题</div>
         </div>
         <div className={styles.cardBody}>
-          <SmallColumnar
-            data={data}
-            color="#2689F4"
-            x="month"
-            y="count"
-            aliasColor="color"
-          />
+          <SmallColumnar data={data} x="month" y="count" />
         </div>
       </div>
     </div>
