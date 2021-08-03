@@ -237,6 +237,7 @@ const Donut: React.FC<DountProps> = props => {
         [`${prefixCls}-donut`]: true,
         [`${prefixCls}-donut-leg-right`]: type === 'normal',
       })}
+      style={style}
     >
       <Chart
         style={{
@@ -299,6 +300,7 @@ const Donut: React.FC<DountProps> = props => {
           color={color}
           adjust="stack"
           size={px2hd(60)}
+          pixelRatio={window.devicePixelRatio}
         />
         <Guide type="html" position={() => ['50%', '50%']} html={htmlStr} />
         {isTableLegend && (
