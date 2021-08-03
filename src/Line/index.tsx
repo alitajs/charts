@@ -73,7 +73,7 @@ const LineBaisc: FC<LineBasicProps> = ({
           }}
         />
         <Axis
-          field="month"
+          field={x}
           label={(text: string) => {
             const ctf = {
               fontSize: px2hd(30),
@@ -91,7 +91,7 @@ const LineBaisc: FC<LineBasicProps> = ({
           labelOffset={px2hd(30)}
         />
         <Axis
-          field="count"
+          field={y}
           line={{
             lineWidth: px2hd(2),
             stroke: axisLineColor,
