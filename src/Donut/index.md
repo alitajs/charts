@@ -19,4 +19,7 @@ nav:
 
 <code src="./demos/table.tsx" />
 
+### 环形可点击，右侧单行展示
+
+<code src="./demos/singleLeg.tsx" />
 <API/>
