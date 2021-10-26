@@ -1,4 +1,4 @@
-import React, { CSSProperties } from 'react';
+import React, { CSSProperties, useRef } from 'react';
 import {
   Chart,
   Geometry,
@@ -8,6 +8,7 @@ import {
   Axis,
   Guide,
   px2hd,
+  Interaction,
   F2,
 } from '@alitajs/f2';
 import classnames from 'classnames';
@@ -43,7 +44,7 @@ export interface DountProps {
    * 图表类型
    * @default normal
    */
-  type?: 'normal' | 'table' | 'legBottom';
+  type?: 'normal' | 'table' | 'legBottom' | 'singleLeg';
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -93,6 +94,10 @@ export interface DountProps {
       </div>`
    */
   htmlStr?: string;
+  /**
+   * 右侧图例点击事件
+   */
+  onLegendEndClick?: (ev: any) => void;
 }
 
 interface TableLegendProps
@@ -198,14 +203,15 @@ const Donut: React.FC<DountProps> = props => {
   )};color:#333333;font-weight: bold;word-break: break-all;">${sumText}</div>
   <div style="font-size: ${px2hd(12)};color:#999999;">${sumTitle}</div>
 </div>`,
+    onLegendEndClick,
     ...reset
   } = props;
-
   const log = useTracker(Donut.displayName, {
     type,
   });
 
   const total = SumBy(data, y);
+  const ref: any = useRef();
 
   const isTableLegend = type === 'table';
   const isRightLegend = type === 'normal';
@@ -230,7 +236,6 @@ const Donut: React.FC<DountProps> = props => {
     legendItems.push(singleLegend);
     newdate.push({ ...obj });
   });
-
   return (
     <div
       className={classnames({
@@ -240,6 +245,7 @@ const Donut: React.FC<DountProps> = props => {
       style={style}
     >
       <Chart
+        ref={ref}
         style={{
           width: '100%',
           height: '100%',
@@ -253,9 +259,11 @@ const Donut: React.FC<DountProps> = props => {
       >
         <Tooltip disable />
         <Legend
-          disable={type !== 'legBottom'}
+          disable={type !== 'singleLeg' && type !== 'legBottom'}
           custom={true}
-          position={type === 'normal' ? 'right' : 'bottom'}
+          position={
+            type === 'normal' || type === 'singleLeg' ? 'right' : 'bottom'
+          }
           align="center"
           wordSpace={px2hd(18)}
           itemMarginBottom={px2hd(36)}
@@ -276,6 +284,7 @@ const Donut: React.FC<DountProps> = props => {
           }}
           items={legendItems}
           onClick={(ev: any) => {
+            console.log(ev);
             const { clickedItem, selectShapeByLegend } = ev;
             const dataName = clickedItem.get('name');
             const onEnd = (clickedShape: any, coord: any, canvas: any) =>
@@ -289,6 +298,7 @@ const Donut: React.FC<DountProps> = props => {
                 drawLabelFlag,
               );
             selectShapeByLegend(dataName, onEnd);
+            onLegendEndClick && onLegendEndClick(clickedItem);
             log('donut_legend_bottom_click');
           }}
         />
