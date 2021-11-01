@@ -52,6 +52,16 @@ interface GroupColumnProps {
    * style
    */
   style?: CSSProperties;
+  /**
+   *  是否显示 tooltip 动画
+   * @default false
+   */
+  tooltip?: boolean;
+  /**
+   * 是否显示柱子上的文字内容
+   * @default true
+   */
+  showLabel?: boolean;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -69,6 +79,8 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         range: [0, 0.89],
       },
     },
+    tooltip = false,
+    showLabel = true,
     ...reset
   } = props;
   const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
@@ -147,9 +159,11 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       >
         <Geometry
           type="interval"
-          position="index*y"
+          // position="index*y"
+          position={data.length > 3 ? 'index*y' : 'x*y'}
           adjust={{
             type: 'dodge',
+            marginRatio: data.length > 3 ? undefined : 0.01,
           }}
           size={
             legendParams.length === 1
@@ -199,6 +213,20 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           labelOffset={px2hd(30)}
         />
         <Axis
+          field="x"
+          label={() => {
+            return {
+              fontSize: px2hd(30),
+              fill: '#999999',
+              lineHeight: px2hd(34),
+            };
+          }}
+          line={{
+            lineWidth: px2hd(2),
+          }}
+          labelOffset={px2hd(30)}
+        />
+        <Axis
           field="y"
           label={{
             fontSize: px2hd(30),
@@ -213,6 +241,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         />
         <Interaction field="pan" />
         {showGuide &&
+          showLabel &&
           newData?.map(item => (
             <Guide
               key={`${item.index}${item.offsetX}`}
@@ -229,7 +258,28 @@ const GroupColumn: FC<GroupColumnProps> = props => {
               offsetX={px2hd(item?.offsetX as number)}
             />
           ))}
-        {!showGuide && <Tooltip triggerOn={['touchstart', 'touchmove']} />}
+        {(!showGuide || tooltip) && (
+          <Tooltip
+            triggerOn={['touchstart', 'touchmove']}
+            nameStyle={{
+              fontSize: px2hd(24),
+              fill: '#fff',
+              textAlign: 'start',
+              textBaseline: 'middle',
+            }} // tooltip name 项的文本样式配置
+            valueStyle={{
+              fontSize: px2hd(24),
+              fill: '#fff',
+              textAlign: 'start',
+              textBaseline: 'middle',
+            }}
+            itemMarkerStyle={{
+              radius: px2hd(7),
+              symbol: 'circle',
+              lineWidth: px2hd(2),
+            }}
+          />
+        )}
       </Chart>
     </div>
   );
