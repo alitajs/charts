@@ -8,7 +8,6 @@ import {
   Axis,
   Guide,
   px2hd,
-  Interaction,
   F2,
 } from '@alitajs/f2';
 import classnames from 'classnames';
