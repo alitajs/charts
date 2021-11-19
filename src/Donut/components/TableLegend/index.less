@@ -18,14 +18,14 @@
       justify-content: center;
 
       &-type {
-        width: 25%;
+        width: 35%;
         text-align: left;
         justify-content: flex-start;
         padding-left: 24 * @hd;
       }
 
       &-ratio {
-        width: 45%;
+        width: 35%;
       }
 
       &-num {
@@ -49,20 +49,19 @@
       line-height: 14 * @hd;
 
       &-type {
-        width: 25%;
-        justify-content: flex-start;
+        width: 35%;
         text-align: left;
         padding-left: 24 * @hd;
-        overflow: hidden;
-        white-space: nowrap;
-        text-overflow: ellipsis;
+        // overflow: hidden;
+        // white-space: nowrap;
+        // text-overflow: ellipsis;
         display: flex;
         align-items: center;
         justify-content: flex-start;
       }
 
       &-ratio {
-        width: 45%;
+        width: 35%;
       }
 
       &-num {
@@ -75,6 +74,7 @@
       height: 6 * @hd;
       border-radius: 5 * @hd;
       margin-right: 4 * @hd;
+      flex-shrink: 0;
     }
   }
 }

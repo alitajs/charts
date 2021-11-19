@@ -98,6 +98,13 @@ export interface DountProps {
    * 右侧图例点击事件
    */
   onLegendEndClick?: (ev: any) => void;
+  /**
+   * 环形图大小设置
+   * 以对象的形式进行传递
+   * @default innerRadius={0.8}radius={0.8}
+   *
+   */
+  coordinateProps?: any;
 }
 
 interface TableLegendProps
@@ -153,7 +160,7 @@ export const drawLabel = (
         text:
           origin._origin[resX] +
           ' ' +
-          (origin._origin[resY] / total).toFixed(2) +
+          ((origin._origin[resY] / total) * 100).toFixed(2) +
           '%',
         fill: '#5E5CE6',
         fontSize: px2hd(24),
@@ -197,6 +204,7 @@ const Donut: React.FC<DountProps> = props => {
     sumTitle = '',
     style,
     drawLabelFlag = true,
+    coordinateProps = {},
     htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
   <div style="font-size:${px2hd(
     42,
@@ -302,7 +310,13 @@ const Donut: React.FC<DountProps> = props => {
             log('donut_legend_bottom_click');
           }}
         />
-        <Coordinate type="polar" transposed innerRadius={0.8} radius={0.8} />
+        <Coordinate
+          type="polar"
+          transposed
+          innerRadius={0.8}
+          radius={0.8}
+          {...coordinateProps}
+        />
         <Axis disable />
         <Geometry
           type="interval"
