@@ -1,6 +1,6 @@
 {
   "name": "@alitajs/charts",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "scripts": {
     "start": "dumi dev",
     "build": "dumi build",
@@ -46,6 +46,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.11",
+    "@types/lodash": "^4.14.177",
     "@umijs/test": "^3.3.7",
     "babel-plugin-version": "^0.2.3",
     "dumi": "1.1.25",

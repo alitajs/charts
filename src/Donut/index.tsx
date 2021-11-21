@@ -12,6 +12,7 @@ import {
 } from '@alitajs/f2';
 import classnames from 'classnames';
 import SumBy from 'lodash/sumBy';
+import Max from 'lodash/max';
 import { withError, useTracker } from '@alitajs/tracker';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import { LegendItem } from '@antv/f2/types/Legend';
@@ -155,19 +156,26 @@ export const drawLabel = (
     const text = group.addShape('Text', {
       attrs: {
         x: point2.x,
-        y: point2.y,
-        text:
-          origin._origin[resX] +
-          ' ' +
-          ((origin._origin[resY] / total) * 100).toFixed(2) +
-          '%',
+        y: point2.y - px2hd(4),
+        text: origin._origin[resX],
         fill: '#5E5CE6',
         fontSize: px2hd(24),
         textAlign: 'start',
         textBaseline: 'bottom',
       },
     });
-    const textWidth = text.getBBox().width;
+    const percentText = group.addShape('Text', {
+      attrs: {
+        x: point2.x,
+        y: point2.y + px2hd(26),
+        text: ((origin._origin[resY] / total) * 100).toFixed(2) + '%',
+        fill: '#5E5CE6',
+        fontSize: px2hd(24),
+        textAlign: 'start',
+        textBaseline: 'bottom',
+      },
+    });
+    const textWidth = Max([text.getBBox().width, percentText.getBBox().width]);
     const baseLine = group.addShape('Line', {
       attrs: {
         x1: point2.x,
@@ -181,10 +189,13 @@ export const drawLabel = (
       baseLine.attr('x2', point2.x + textWidth);
     } else if (point2.x < center.x) {
       text.attr('textAlign', 'end');
+      percentText.attr('textAlign', 'end');
       baseLine.attr('x2', point2.x - textWidth);
     } else {
       text.attr('textAlign', 'center');
       text.attr('textBaseline', 'top');
+      percentText.attr('textAlign', 'center');
+      percentText.attr('textBaseline', 'top');
     }
   }
   canvas.add(group);
@@ -291,7 +302,6 @@ const Donut: React.FC<DountProps> = props => {
           }}
           items={legendItems}
           onClick={(ev: any) => {
-            console.log(ev);
             const { clickedItem, selectShapeByLegend } = ev;
             const dataName = clickedItem.get('name');
             const onEnd = (clickedShape: any, coord: any, canvas: any) =>
