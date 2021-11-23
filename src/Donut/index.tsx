@@ -156,7 +156,7 @@ export const drawLabel = (
     const text = group.addShape('Text', {
       attrs: {
         x: point2.x,
-        y: point2.y - px2hd(4),
+        y: point2.y - px2hd(8),
         text: origin._origin[resX],
         fill: '#5E5CE6',
         fontSize: px2hd(24),
@@ -167,7 +167,7 @@ export const drawLabel = (
     const percentText = group.addShape('Text', {
       attrs: {
         x: point2.x,
-        y: point2.y + px2hd(26),
+        y: point2.y + px2hd(30),
         text: ((origin._origin[resY] / total) * 100).toFixed(2) + '%',
         fill: '#5E5CE6',
         fontSize: px2hd(24),
