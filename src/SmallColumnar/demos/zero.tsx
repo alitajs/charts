@@ -10,15 +10,15 @@ import styles from './index.less';
 const data = [
   {
     month: '01月',
-    count: '12',
+    count: '1200',
   },
   {
     month: '02月',
-    count: 34,
+    count: 3,
   },
   {
     month: '03月',
-    count: 26,
+    count: 262,
   },
   {
     month: '04月',
@@ -147,7 +147,13 @@ const Demo: FC<DemoProps> = props => {
           <div className={styles.title}>卡片标题</div>
         </div>
         <div className={styles.cardBody}>
-          <ZeroColumn data={data} x="month" y="count" />
+          <ZeroColumn
+            data={data}
+            showGuide
+            showToolTips={false}
+            x="month"
+            y="count"
+          />
         </div>
       </div>
     </div>

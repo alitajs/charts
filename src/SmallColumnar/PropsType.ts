@@ -27,3 +27,17 @@ export interface SmallColumnarProps {
    */
   y: string;
 }
+
+export interface ZeroColumnProps extends SmallColumnarProps {
+  /**
+   * @description 是否展示toolTips
+   * @default true
+   */
+  showToolTips?: boolean;
+
+  /**
+   * @description 是否展示showGuide
+   * @default false
+   */
+  showGuide?: boolean;
+}
