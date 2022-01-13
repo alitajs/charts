@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, useMemo, useState, useEffect } from 'react';
 import {
   Chart,
   Geometry,
@@ -31,9 +31,12 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
   showGuide = false,
   ...reset
 }) => {
-  const newData = useMemo(
-    () =>
-      data?.map((item, index) => {
+  const [newData, setNewData] = useState<any[]>();
+
+  useEffect(() => {
+    if (data) {
+      const tempData = [...data];
+      const targetData = tempData?.map((item, index) => {
         return {
           x: item[x],
           y: +item[y] || 0,
@@ -41,10 +44,13 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
           color: item.color || COLORS[index % COLORS.length],
           index,
         };
-      }),
-    [data],
-  );
-
+      });
+      setNewData(targetData);
+    }
+  }, [data, x, y]);
+  if (!newData || newData.length === 0) {
+    return null;
+  }
   return (
     <div className={prefixCls}>
       <Chart
@@ -76,8 +82,9 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
               fontSize: px2hd(22),
               textAlign: 'center',
               fill: '#999',
-              text: newData[parseInt(text, 10)].x,
+              text: newData[parseInt(text, 10)]?.x,
             };
+            console.log(newData, text, data);
             return ctf;
           }}
           grid={null}
@@ -85,7 +92,8 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
         <Axis
           field="y"
           line={null}
-          label={() => {
+          label={x => {
+            console.log(x);
             return '';
           }}
           grid={null}
@@ -95,8 +103,7 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
           <Tooltip
             triggerOn={['touchstart', 'touchmove']}
             tooltipMarkerStyle={{
-              width: px2hd(20),
-              margin: [-px2hd(10), 0],
+              width: px2hd(32),
             }}
             background={{
               radius: 2,
@@ -120,15 +127,19 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
               lineWidth: 0,
             }}
             onShow={ev => {
-              const items = ev.items;
-              items[0].name = items[0].origin.x;
-              const value = items[0].value;
-              items[0].value = value;
+              try {
+                const items = ev.items;
+                items[0].name = items[0].origin.x;
+                const value = items[0].value;
+                items[0].value = value;
+              } catch (err) {
+                console.log(err);
+              }
             }}
           />
         )}
         {showGuide &&
-          newData.map(item => {
+          newData?.map(item => {
             const stringY =
               typeof item.y === 'number' ? String(item.y) : item.y || '';
             return (
