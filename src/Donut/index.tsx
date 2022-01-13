@@ -16,7 +16,13 @@ import Max from 'lodash/max';
 import { withError, useTracker } from '@alitajs/tracker';
 import { ChartProps } from '@alitajs/f2/dist/Chart';
 import { LegendItem } from '@antv/f2/types/Legend';
-import { TableLegend, RightLegend } from './components';
+import {
+  TableLegend,
+  RightLegend,
+  CustomTableLegend,
+  CustomLegend,
+} from './components';
+import { CustomLegendProps } from './components/CustomLegend';
 import './index.less';
 
 const { G } = F2;
@@ -35,6 +41,21 @@ export const COLOR_MENU = [
   '#F6C65D',
 ];
 
+interface LegendItemProps {
+  item: any;
+  index: number;
+  color?: string;
+  total: number;
+  x: string;
+  y: string;
+}
+
+export interface DountCustomTypeProps {
+  value: string;
+  title: string;
+  showDot?: boolean;
+}
+
 export interface DountProps {
   /**
    * 图表展示数据
@@ -44,7 +65,13 @@ export interface DountProps {
    * 图表类型
    * @default normal
    */
-  type?: 'normal' | 'table' | 'legBottom' | 'singleLeg';
+  type?:
+    | 'normal'
+    | 'table'
+    | 'legBottom'
+    | 'singleLeg'
+    | 'customTable'
+    | 'custom';
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -79,7 +106,7 @@ export interface DountProps {
    * 表格自定义标题
    * @default ['分类', '占比', '数量']
    */
-  tableHeader?: string[];
+  tableHeader?: string[] | DountCustomTypeProps[];
   /*
    * style
    */
@@ -105,6 +132,15 @@ export interface DountProps {
    *
    */
   coordinateProps?: any;
+
+  /**
+   * @description 自定义图例信息 只有type为custom时生效
+   * @default -
+   */
+  renderLegend: (
+    legend: LegendItemProps,
+    showSelectShapeCallback: () => void,
+  ) => React.ReactNode;
 }
 
 interface TableLegendProps
@@ -215,6 +251,7 @@ const Donut: React.FC<DountProps> = props => {
     style,
     drawLabelFlag = true,
     coordinateProps = {},
+    renderLegend,
     htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
   <div style="font-size:${px2hd(
     42,
@@ -233,6 +270,9 @@ const Donut: React.FC<DountProps> = props => {
 
   const isTableLegend = type === 'table';
   const isRightLegend = type === 'normal';
+  const isCustomTableLegend = type === 'customTable';
+  const isCustomLegend = type === 'custom';
+
   if (!data) {
     return <p>data is undefined!</p>;
   }
@@ -341,6 +381,18 @@ const Donut: React.FC<DountProps> = props => {
         )}
         {isRightLegend && (
           <RightLegend {...props} color={color} total={total} log={log} />
+        )}
+        {isCustomTableLegend && (
+          <CustomTableLegend {...props} color={color} total={total} log={log} />
+        )}
+        {isCustomLegend && (
+          <CustomLegend
+            {...props}
+            color={color}
+            total={total}
+            log={log}
+            renderLegend={renderLegend}
+          />
         )}
       </Chart>
     </div>

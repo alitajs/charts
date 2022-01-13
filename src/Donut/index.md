@@ -22,4 +22,13 @@ nav:
 ### 环形可点击，右侧单行展示
 
 <code src="./demos/singleLeg.tsx" />
+
+### 环形可点击，自定义 Table 展示
+
+<code src="./demos/customTable.tsx" />
+
+### 环形可点击，自定义展示
+
+<code src="./demos/custom.tsx" />
+
 <API/>
