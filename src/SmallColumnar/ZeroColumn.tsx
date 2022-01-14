@@ -64,15 +64,21 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
           ...style,
         }}
         {...reset}
+        tooltip={false}
       >
         <Geometry
           type="interval"
           position="index*y"
-          shape={'dodge'}
-          style={{ radius: px2hd(11), width: px2hd(20) }}
-          adjust="stack"
+          size={px2hd(22)}
+          style={[
+            x,
+            {
+              radius: (sty: any) => {
+                return px2hd(11);
+              },
+            },
+          ]}
           pixelRatio={window.devicePixelRatio}
-          // color="index"
         />
         <Axis
           field="index"
@@ -84,60 +90,59 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
               fill: '#999',
               text: newData[parseInt(text, 10)]?.x,
             };
-            console.log(newData, text, data);
             return ctf;
           }}
-          grid={null}
+          // grid={null}
+          // labelOffset={px2hd(20)}
         />
         <Axis
           field="y"
           line={null}
           label={x => {
-            console.log(x);
             return '';
           }}
           grid={null}
+          // labelOffset={px2hd(20)}
         />
         <Interaction field="pan" />
-        {showToolTips && (
-          <Tooltip
-            triggerOn={['touchstart', 'touchmove']}
-            tooltipMarkerStyle={{
-              width: px2hd(32),
-            }}
-            background={{
-              radius: 2,
-              padding: [px2hd(10), px2hd(16)],
-            }}
-            nameStyle={{
-              fontSize: px2hd(20),
-              fill: '#fff',
-              textAlign: 'start',
-              textBaseline: 'middle',
-            }}
-            valueStyle={{
-              fontSize: px2hd(20),
-              fill: '#fff',
-              textAlign: 'start',
-              textBaseline: 'middle',
-            }}
-            itemMarkerStyle={{
-              radius: px2hd(7),
-              symbol: 'circle',
-              lineWidth: 0,
-            }}
-            onShow={ev => {
-              try {
-                const items = ev.items;
-                items[0].name = items[0].origin.x;
-                const value = items[0].value;
-                items[0].value = value;
-              } catch (err) {
-                console.log(err);
-              }
-            }}
-          />
-        )}
+        <Tooltip
+          disable={!showToolTips}
+          triggerOn={['touchstart', 'touchmove']}
+          tooltipMarkerStyle={{
+            width: px2hd(32),
+          }}
+          background={{
+            radius: 2,
+            padding: [px2hd(10), px2hd(16)],
+          }}
+          nameStyle={{
+            fontSize: px2hd(20),
+            fill: '#fff',
+            textAlign: 'start',
+            textBaseline: 'middle',
+          }}
+          valueStyle={{
+            fontSize: px2hd(20),
+            fill: '#fff',
+            textAlign: 'start',
+            textBaseline: 'middle',
+          }}
+          itemMarkerStyle={{
+            radius: px2hd(7),
+            symbol: 'circle',
+            lineWidth: 0,
+          }}
+          onShow={ev => {
+            try {
+              const items = ev.items;
+              items[0].name = items[0].origin.x;
+              const value = items[0].value;
+              items[0].value = value;
+            } catch (err) {
+              console.log(err);
+            }
+          }}
+        />
         {showGuide &&
           newData?.map(item => {
             const stringY =
@@ -155,7 +160,7 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
                 content={item?.y}
                 position={[item?.index, item?.y]}
                 offsetY={px2hd(-10)}
-                offsetX={px2hd(4)}
+                // offsetX={px2hd(4)}
               />
             );
           })}
