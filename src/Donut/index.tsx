@@ -243,7 +243,7 @@ const Donut: React.FC<DountProps> = props => {
     data,
     type = 'normal',
     colDefs = {},
-    x,
+    x = 'name',
     y,
     color = [`${x}`, COLOR_MENU],
     sumText,
@@ -281,6 +281,7 @@ const Donut: React.FC<DountProps> = props => {
   data.map((obj: any, index: number) => {
     let singleLegend = {
       name: obj[x],
+      [x]: obj[x],
       value: parseFloat(obj[y]),
       marker: {
         symbol: 'circle',
@@ -292,6 +293,7 @@ const Donut: React.FC<DountProps> = props => {
     if (`${obj[y]}`.indexOf('.'))
       singleLegend.value = parseFloat(obj[y]).toFixed(2);
     legendItems.push(singleLegend);
+    obj.name = obj[x];
     newdate.push({ ...obj });
   });
   return (
@@ -343,7 +345,7 @@ const Donut: React.FC<DountProps> = props => {
           items={legendItems}
           onClick={(ev: any) => {
             const { clickedItem, selectShapeByLegend } = ev;
-            const dataName = clickedItem.get('name');
+            const dataName = clickedItem.get(x);
             const onEnd = (clickedShape: any, coord: any, canvas: any) =>
               drawLabel(
                 clickedShape,
