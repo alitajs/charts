@@ -345,7 +345,7 @@ const Donut: React.FC<DountProps> = props => {
           items={legendItems}
           onClick={(ev: any) => {
             const { clickedItem, selectShapeByLegend } = ev;
-            const dataName = clickedItem.get(x);
+            const dataName = clickedItem.get('name');
             const onEnd = (clickedShape: any, coord: any, canvas: any) =>
               drawLabel(
                 clickedShape,
