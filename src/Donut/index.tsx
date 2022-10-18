@@ -25,7 +25,7 @@ import {
 import { CustomLegendProps } from './components/CustomLegend';
 import './index.less';
 
-const { G } = F2;
+const { G, Shape } = F2;
 const { Group } = G;
 
 export const prefixCls = 'alitajs-charts';
@@ -71,7 +71,8 @@ export interface DountProps {
     | 'legBottom'
     | 'singleLeg'
     | 'customTable'
-    | 'custom';
+    | 'custom'
+    | 'progress';
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -141,6 +142,28 @@ export interface DountProps {
     legend: LegendItemProps,
     showSelectShapeCallback: () => void,
   ) => React.ReactNode;
+
+  /**
+   * 环形图宽度
+   * @default 60
+   */
+  size?: number;
+
+  /**
+   * position是否为x*y
+   * @default false
+   */
+  xTakeY?: boolean;
+
+  /**
+   * @default {}
+   */
+  geometryProps?: any;
+
+  /**
+   * @default #eee
+   */
+  strokeColor?: string;
 }
 
 interface TableLegendProps
@@ -249,9 +272,13 @@ const Donut: React.FC<DountProps> = props => {
     sumText,
     sumTitle = '',
     style,
+    size = 60,
+    xTakeY = false,
     drawLabelFlag = true,
     coordinateProps = {},
+    geometryProps = {},
     renderLegend,
+    strokeColor = '#eee',
     htmlStr = `<div style="width: ${px2hd(125)}px;text-align: center;">
   <div style="font-size:${px2hd(
     42,
@@ -272,6 +299,7 @@ const Donut: React.FC<DountProps> = props => {
   const isRightLegend = type === 'normal';
   const isCustomTableLegend = type === 'customTable';
   const isCustomLegend = type === 'custom';
+  const isProgressLegend = type === 'progress';
 
   if (!data) {
     return <p>data is undefined!</p>;
@@ -296,6 +324,82 @@ const Donut: React.FC<DountProps> = props => {
     obj.name = obj[x];
     newdate.push({ ...obj });
   });
+
+  const registerProgressShape = () => {
+    Shape.registerShape('interval', 'tick', {
+      draw: function draw(cfg: any, container: any) {
+        const points = this.parsePoints(cfg.points);
+        const style = F2.Util.mix(
+          {
+            stroke: cfg.color,
+          },
+          F2.Global.shape.interval,
+          cfg.style,
+        );
+        if (cfg.isInCircle) {
+          let newPoints = points.slice(0);
+          if (this._coord.transposed) {
+            newPoints = [points[0], points[3], points[2], points[1]];
+          }
+          const _cfg$center = cfg.center,
+            x = _cfg$center.x,
+            y = _cfg$center.y;
+          const v = [1, 0];
+          const v0 = [newPoints[0].x - x, newPoints[0].y - y];
+          const v1 = [newPoints[1].x - x, newPoints[1].y - y];
+          const v2 = [newPoints[2].x - x, newPoints[2].y - y];
+          let startAngle = F2.G.Vector2.angleTo(v, v1);
+          let endAngle = F2.G.Vector2.angleTo(v, v2);
+          const r0 = F2.G.Vector2.length(v0);
+          const r = F2.G.Vector2.length(v1);
+          if (startAngle >= 1.5 * Math.PI) {
+            startAngle = startAngle - 2 * Math.PI;
+          }
+          if (endAngle >= 1.5 * Math.PI) {
+            endAngle = endAngle - 2 * Math.PI;
+          }
+          const lineWidth = r - r0;
+          const newRadius = r - lineWidth / 2;
+          return container.addShape('Arc', {
+            className: 'interval',
+            attrs: F2.Util.mix(
+              {
+                x,
+                y,
+                startAngle,
+                endAngle,
+                r: newRadius,
+                lineWidth,
+                lineCap: 'round',
+              },
+              style,
+            ),
+          });
+        }
+      },
+    });
+  };
+
+  const mGeometryProps: any = {
+    type: 'interval',
+    position: `a*${y}`,
+    color,
+    adjust: 'stack',
+    size: px2hd(size),
+    pixelRatio: window.devicePixelRatio,
+    ...geometryProps,
+  };
+
+  if (xTakeY) {
+    mGeometryProps.position = `${x}*${y}`;
+    delete mGeometryProps.adjust;
+  }
+
+  if (isProgressLegend) {
+    registerProgressShape();
+    mGeometryProps.shape = 'tick';
+  }
+
   return (
     <div
       className={classnames({
@@ -369,15 +473,17 @@ const Donut: React.FC<DountProps> = props => {
           {...coordinateProps}
         />
         <Axis disable />
-        <Geometry
-          type="interval"
-          position={`a*${y}`}
-          color={color}
-          adjust="stack"
-          size={px2hd(60)}
-          pixelRatio={window.devicePixelRatio}
-        />
+        <Geometry {...mGeometryProps} />
         <Guide type="html" position={() => ['50%', '50%']} html={htmlStr} />
+        {isProgressLegend && (
+          <Guide
+            type="arc"
+            start={[0, 0]}
+            end={[1, 99.98]}
+            top={false}
+            style={{ lineWidth: px2hd(size), stroke: strokeColor }}
+          />
+        )}
         {isTableLegend && (
           <TableLegend {...props} color={color} total={total} log={log} />
         )}
