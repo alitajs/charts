@@ -62,6 +62,11 @@ interface GroupColumnProps {
    * @default true
    */
   showLabel?: boolean;
+
+  /**
+   * @default -
+   */
+  geometryProps?: any;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -81,13 +86,16 @@ const GroupColumn: FC<GroupColumnProps> = props => {
     },
     tooltip = false,
     showLabel = true,
+    geometryProps = {},
     ...reset
   } = props;
   const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
+  const [originDates, setoriginDates] = useState<any[]>([]);
   const [showGuide, setShowGuide] = useState(true);
 
   useEffect(() => {
     const dat: GroupColumnDataProps[] = [];
+    const mOriginDates: any[] = [];
     let show = true;
 
     // 柱形图排列规则是按中心点两边排列，左右对称。如果其他地方也有用到这个方法，可以移动到 alitajs/f2 中
@@ -127,6 +135,9 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       (leg: GroupColumnLegendParamsProps, legendIndex: number) => {
         data.forEach((item: GroupColumnDataProps, index: number) => {
           if (parseInt(`${item[leg.value]}`) > 999) show = false;
+          if (legendIndex === 0 && index < 3) {
+            mOriginDates.push(item[x]);
+          }
           dat.push({
             name: leg.label,
             x: item[x],
@@ -138,6 +149,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
       },
     );
     setNewData(dat);
+    setoriginDates(mOriginDates);
     setShowGuide(show);
   }, [data]);
 
@@ -153,13 +165,18 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         }}
         pixelRatio={window.devicePixelRatio}
         animate
-        colDefs={colDefs}
+        colDefs={{
+          x: {
+            tickCount: 3,
+            values: originDates,
+          },
+          ...colDefs,
+        }}
         padding={[px2hd(120), px2hd(74), px2hd(60), px2hd(120)]}
         {...reset}
       >
         <Geometry
           type="interval"
-          // position="index*y"
           position={data.length > 3 ? 'index*y' : 'x*y'}
           adjust={{
             type: 'dodge',
@@ -174,6 +191,7 @@ const GroupColumn: FC<GroupColumnProps> = props => {
           style={{
             radius: [px2hd(8), px2hd(8), 0, 0],
           }}
+          {...geometryProps}
         />
         <Legend
           marker={{
