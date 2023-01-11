@@ -27,6 +27,7 @@ export default defineConfig({
     `.__dumi-default-mobile-demo-layout {
       padding: 0 !important;
       background-color: #F6F6F6;
+      font-size: 0.28rem;
     }`,
   ],
 });
