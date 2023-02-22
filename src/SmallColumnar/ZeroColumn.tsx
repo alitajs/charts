@@ -47,7 +47,7 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
       });
       setNewData(targetData);
     }
-  }, [data, x, y]);
+  }, [JSON.stringify(data), x, y]);
   if (!newData || newData.length === 0) {
     return null;
   }
