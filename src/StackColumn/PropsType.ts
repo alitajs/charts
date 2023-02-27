@@ -50,4 +50,16 @@ export interface StackColumnProps {
    * style
    */
   style?: CSSProperties;
+
+  /**
+   *  xStyle x轴信息，包括字体大小等
+   *
+   */
+  xStyle?: any;
+
+  /**
+   *  yStyle x轴信息，包括字体大小等
+   *
+   */
+  yStyle?: any;
 }

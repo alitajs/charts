@@ -32,6 +32,8 @@ const LineBaisc: FC<LineBasicProps> = ({
   x,
   y,
   onRenderToolTips,
+  xStyle = {},
+  yStyle = {},
   ...reset
 }) => {
   if (!data) {
@@ -75,10 +77,12 @@ const LineBaisc: FC<LineBasicProps> = ({
         <Axis
           field={x}
           label={(text: string) => {
+            const { fontSize, ...restProps } = xStyle;
             const ctf = {
-              fontSize: px2hd(30),
+              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
               fill: axisLabelColor,
               text: axisXLabel ? axisXLabel(text) : text,
+              ...restProps,
             };
             return ctf;
           }}
@@ -99,10 +103,12 @@ const LineBaisc: FC<LineBasicProps> = ({
             lineDash: [px2hd(10), px2hd(10)],
           }}
           label={(text: string) => {
+            const { fontSize, ...restProps } = yStyle;
             const ctf = {
-              fontSize: px2hd(30),
+              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
               fill: axisLabelColor,
               text: axisYLabel ? axisYLabel(text) : `${text}`,
+              ...restProps,
             };
             return ctf;
           }}

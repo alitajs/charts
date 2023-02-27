@@ -67,6 +67,24 @@ interface GroupColumnProps {
    * @default -
    */
   geometryProps?: any;
+
+  /**
+   *  xStyle x轴信息，包括字体大小等
+   *
+   */
+  xStyle?: any;
+
+  /**
+   *  guideTextStyle 辅助文字信息，包括字体大小等
+   *
+   */
+  guideTextStyle?: any;
+
+  /**
+   *  xStyle x轴信息，包括字体大小等
+   *
+   */
+  yStyle?: any;
 }
 
 const GroupColumn: FC<GroupColumnProps> = props => {
@@ -87,6 +105,9 @@ const GroupColumn: FC<GroupColumnProps> = props => {
     tooltip = false,
     showLabel = true,
     geometryProps = {},
+    xStyle = {},
+    yStyle = {},
+    guideTextStyle = {},
     ...reset
   } = props;
   const [newData, setNewData] = useState<GroupColumnDataProps[]>([]);
@@ -218,11 +239,13 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         <Axis
           field="index"
           label={(text: string) => {
+            const { fontSize, ...restProps } = xStyle;
             return {
-              fontSize: px2hd(30),
-              fill: '#999999',
+              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fill: '#999',
               lineHeight: px2hd(34),
               text: newData[parseInt(text, 10)].x,
+              ...restProps,
             };
           }}
           line={{
@@ -233,10 +256,12 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         <Axis
           field="x"
           label={() => {
+            const { fontSize, ...restProps } = xStyle;
             return {
-              fontSize: px2hd(30),
-              fill: '#999999',
+              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fill: '#999',
               lineHeight: px2hd(34),
+              ...restProps,
             };
           }}
           line={{
@@ -246,10 +271,14 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         />
         <Axis
           field="y"
-          label={{
-            fontSize: px2hd(30),
-            fill: '#999999',
-            lineHeight: px2hd(34),
+          label={() => {
+            const { fontSize, ...restProps } = yStyle;
+            return {
+              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fill: '#999',
+              lineHeight: px2hd(34),
+              ...restProps,
+            };
           }}
           grid={{
             lineWidth: px2hd(2),
@@ -260,22 +289,26 @@ const GroupColumn: FC<GroupColumnProps> = props => {
         <Interaction field="pan" />
         {showGuide &&
           showLabel &&
-          newData?.map(item => (
-            <Guide
-              key={`${item.index}${item.offsetX}`}
-              type="text"
-              limitInPlot={true}
-              style={{
-                textBaseline: 'bottom',
-                textAlign: 'center',
-                fontSize: px2hd(24),
-              }}
-              content={item?.y}
-              position={[item?.index, item?.y]}
-              offsetY={px2hd(-10)}
-              offsetX={px2hd(item?.offsetX as number)}
-            />
-          ))}
+          newData?.map(item => {
+            const { fontSize, ...restProps } = guideTextStyle;
+            return (
+              <Guide
+                key={`${item.index}${item.offsetX}`}
+                type="text"
+                limitInPlot={true}
+                style={{
+                  textBaseline: 'bottom',
+                  textAlign: 'center',
+                  fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(24),
+                  ...restProps,
+                }}
+                content={item?.y}
+                position={[item?.index, item?.y]}
+                offsetY={px2hd(-10)}
+                offsetX={px2hd(item?.offsetX as number)}
+              />
+            );
+          })}
         {(!showGuide || tooltip) && (
           <Tooltip
             triggerOn={['touchstart', 'touchmove']}
