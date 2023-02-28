@@ -5,12 +5,13 @@ import {
   px2hd,
   Geometry,
   Interaction,
-  Axis,
+  // Axis,
   Legend,
   Tooltip,
   getPercentage,
 } from '@alitajs/f2';
 import { LegendItem } from '@antv/f2/types/Legend';
+import Axis from '../components/Axis';
 import {
   StackColumnProps,
   StackColumnLegendParamsProps,

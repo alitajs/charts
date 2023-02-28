@@ -5,10 +5,11 @@ import {
   Chart,
   Geometry,
   Tooltip,
-  Axis,
+  // Axis,
   px2hd,
   Interaction,
 } from '@alitajs/f2';
+import Axis from '../components/Axis';
 import {
   LineProps as LineBasicProps,
   LineToolTipsViewProps,

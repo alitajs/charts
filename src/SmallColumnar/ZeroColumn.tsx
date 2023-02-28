@@ -1,16 +1,18 @@
-import React, { FC, useMemo, useState, useEffect, useRef } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import {
   Chart,
   Geometry,
-  Axis,
+  // Axis,
   px2hd,
   Tooltip,
   Interaction,
   Guide,
-  ScrollBar,
+  // ScrollBar,
 } from '@alitajs/f2';
 import { ZeroColumnProps } from './PropsType';
 import { COLORS } from '../utils/color';
+import Axis from '../components/Axis';
+import ScrollBar from '../components/ScrollBar';
 import './index.less';
 
 const prefixCls = 'alita-small-columnar';
@@ -36,6 +38,7 @@ const ZeroColumn: FC<ZeroColumnProps> = props => {
     guideTextStyle = {},
     ...reset
   } = props;
+  const chartRef = useRef<any>();
   const [newData, setNewData] = useState<any[]>();
   useEffect(() => {
     if (data) {
@@ -52,14 +55,13 @@ const ZeroColumn: FC<ZeroColumnProps> = props => {
       setNewData(targetData);
     }
   }, [JSON.stringify(data), x, y]);
-  const myR = useMemo(() => {}, [JSON.stringify(props)]);
-
   if (!newData || newData.length === 0) {
     return null;
   }
-  return (
+  const render = () => (
     <div className={prefixCls}>
       <Chart
+        ref={chartRef}
         data={newData}
         pixelRatio={window.devicePixelRatio}
         padding={padding}
@@ -177,20 +179,20 @@ const ZeroColumn: FC<ZeroColumnProps> = props => {
               />
             );
           })}
-        {scrollBarConfig?.visible ? (
-          <ScrollBar
-            xStyle={{
-              backgroundColor: '#e8e8e8',
-              fillerColor: 'rgba(178, 178, 178,0.5)',
-              size: 4,
-              offsetY: 0,
-            }}
-            {...scrollBarConfig}
-          />
-        ) : null}
+        <ScrollBar
+          xStyle={{
+            backgroundColor: '#e8e8e8',
+            fillerColor: 'rgba(178, 178, 178,0.5)',
+            size: 4,
+            offsetY: 0,
+          }}
+          {...scrollBarConfig}
+        />
       </Chart>
     </div>
   );
+
+  return render();
 };
 
 export default ZeroColumn;

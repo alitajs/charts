@@ -1,15 +1,16 @@
 import React, { CSSProperties, useRef } from 'react';
 import {
   Chart,
-  Geometry,
+  // Geometry,
   Tooltip,
   Legend,
   Coordinate,
-  Axis,
+  // Axis,
   Guide,
   px2hd,
   F2,
 } from '@alitajs/f2';
+import Axis from '../components/Axis';
 import classnames from 'classnames';
 import SumBy from 'lodash/sumBy';
 import Max from 'lodash/max';

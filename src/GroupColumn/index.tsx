@@ -4,7 +4,7 @@ import {
   Geometry,
   Legend,
   px2hd,
-  Axis,
+  // Axis,
   Interaction,
   Guide,
   Tooltip,
@@ -14,7 +14,7 @@ import {
   GroupColumnDataProps,
   GroupColumnLegendParamsProps,
 } from './PropsType';
-
+import Axis from '../components/Axis';
 const COLOR_MENU = ['#5E5CE6', '#2689F4', '#E58A3C', '#F36A3F', '#4DCB75'];
 
 interface GroupColumnProps {
