@@ -149,7 +149,7 @@ const StackColumn: FC<StackColumnProps> = props => {
           label={(text: string) => {
             const { fontSize, ...restProps } = xStyle;
             return {
-              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
               fill: '#999999',
               lineHeight: px2hd(34),
               text: newData[parseInt(text, 10)].x,
@@ -166,7 +166,7 @@ const StackColumn: FC<StackColumnProps> = props => {
           label={() => {
             const { fontSize, ...restProps } = yStyle;
             return {
-              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
               fill: '#999999',
               lineHeight: px2hd(34),
               ...restProps,

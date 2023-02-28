@@ -1,7 +1,7 @@
 import React, { CSSProperties, useRef } from 'react';
 import {
   Chart,
-  // Geometry,
+  Geometry,
   Tooltip,
   Legend,
   Coordinate,

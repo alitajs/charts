@@ -80,7 +80,7 @@ const LineBaisc: FC<LineBasicProps> = ({
           label={(text: string) => {
             const { fontSize, ...restProps } = xStyle;
             const ctf = {
-              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
               fill: axisLabelColor,
               text: axisXLabel ? axisXLabel(text) : text,
               ...restProps,
@@ -106,7 +106,7 @@ const LineBaisc: FC<LineBasicProps> = ({
           label={(text: string) => {
             const { fontSize, ...restProps } = yStyle;
             const ctf = {
-              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(30),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
               fill: axisLabelColor,
               text: axisYLabel ? axisYLabel(text) : `${text}`,
               ...restProps,

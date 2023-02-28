@@ -97,7 +97,7 @@ const ZeroColumn: FC<ZeroColumnProps> = props => {
           label={text => {
             const { fontSize, ...restProps } = xStyle;
             const ctf = {
-              fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(22),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(22),
               textAlign: 'center',
               fill: '#999',
               text: newData[parseInt(text, 10)]?.x,
@@ -169,7 +169,9 @@ const ZeroColumn: FC<ZeroColumnProps> = props => {
                 style={{
                   textBaseline: 'bottom',
                   textAlign: 'center',
-                  fontSize: px2hd(parseInt(fontSize) * 2) || px2hd(24),
+                  fontSize: fontSize
+                    ? px2hd(parseInt(fontSize) * 2)
+                    : px2hd(24),
                   ...restProps,
                 }}
                 content={item?.y}
