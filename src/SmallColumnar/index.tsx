@@ -1,5 +1,6 @@
 import React, { FC } from 'react';
-import { Chart, Geometry, Axis, px2hd, Guide, Legend } from '@alitajs/f2';
+import { Chart, Geometry, px2hd, Guide } from '@alitajs/f2';
+import Axis from '../components/Axis';
 import { SmallColumnarProps } from './PropsType';
 import './index.less';
 

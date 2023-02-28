@@ -5,12 +5,13 @@ import {
   px2hd,
   Geometry,
   Interaction,
-  Axis,
+  // Axis,
   Legend,
   Tooltip,
   getPercentage,
 } from '@alitajs/f2';
 import { LegendItem } from '@antv/f2/types/Legend';
+import Axis from '../components/Axis';
 import {
   StackColumnProps,
   StackColumnLegendParamsProps,
@@ -44,6 +45,8 @@ const StackColumn: FC<StackColumnProps> = props => {
         range: [0, 0.89],
       },
     },
+    xStyle = {},
+    yStyle = {},
     ...reset
   } = props;
   const [newData, setNewData] = useState<StackColumnDataProps[]>([]);
@@ -144,11 +147,13 @@ const StackColumn: FC<StackColumnProps> = props => {
         <Axis
           field="index"
           label={(text: string) => {
+            const { fontSize, ...restProps } = xStyle;
             return {
-              fontSize: px2hd(30),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
               fill: '#999999',
               lineHeight: px2hd(34),
               text: newData[parseInt(text, 10)].x,
+              ...restProps,
             };
           }}
           line={{
@@ -158,10 +163,14 @@ const StackColumn: FC<StackColumnProps> = props => {
         />
         <Axis
           field="y"
-          label={{
-            fontSize: px2hd(30),
-            fill: '#999999',
-            lineHeight: px2hd(34),
+          label={() => {
+            const { fontSize, ...restProps } = yStyle;
+            return {
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(30),
+              fill: '#999999',
+              lineHeight: px2hd(34),
+              ...restProps,
+            };
           }}
           grid={{
             lineWidth: px2hd(2),

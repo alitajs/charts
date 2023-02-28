@@ -1,38 +1,45 @@
-import React, { FC, useMemo, useState, useEffect } from 'react';
+import React, { FC, useState, useEffect, useRef } from 'react';
 import {
   Chart,
   Geometry,
-  Axis,
+  // Axis,
   px2hd,
   Tooltip,
   Interaction,
   Guide,
+  // ScrollBar,
 } from '@alitajs/f2';
 import { ZeroColumnProps } from './PropsType';
 import { COLORS } from '../utils/color';
+import Axis from '../components/Axis';
+import ScrollBar from '../components/ScrollBar';
 import './index.less';
 
 const prefixCls = 'alita-small-columnar';
-const ZeroColumn: FC<ZeroColumnProps> = ({
-  data = [],
-  padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
-  style = {},
-  x,
-  y,
-  colDefs = {
-    index: {
-      tickInterval: 1,
-      min: -0.4,
-      max: 4.1,
-      range: [0, 0.89],
+const ZeroColumn: FC<ZeroColumnProps> = props => {
+  const {
+    data = [],
+    padding = [px2hd(90), px2hd(30), 'auto', 'auto'],
+    style = {},
+    x,
+    y,
+    colDefs = {
+      index: {
+        tickInterval: 1,
+        min: -0.4,
+        max: 4,
+        range: [0, 0.98],
+      },
     },
-  },
-  showToolTips = true,
-  showGuide = false,
-  ...reset
-}) => {
+    showToolTips = true,
+    showGuide = false,
+    scrollBarConfig = {},
+    xStyle = {},
+    guideTextStyle = {},
+    ...reset
+  } = props;
+  const chartRef = useRef<any>();
   const [newData, setNewData] = useState<any[]>();
-
   useEffect(() => {
     if (data) {
       const tempData = [...data];
@@ -51,9 +58,10 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
   if (!newData || newData.length === 0) {
     return null;
   }
-  return (
+  const render = () => (
     <div className={prefixCls}>
       <Chart
+        ref={chartRef}
         data={newData}
         pixelRatio={window.devicePixelRatio}
         padding={padding}
@@ -76,6 +84,9 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
               radius: (sty: any) => {
                 return px2hd(11);
               },
+              width: () => {
+                return px2hd(14);
+              },
             },
           ]}
           pixelRatio={window.devicePixelRatio}
@@ -84,11 +95,13 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
           field="index"
           line={null}
           label={text => {
+            const { fontSize, ...restProps } = xStyle;
             const ctf = {
-              fontSize: px2hd(22),
+              fontSize: fontSize ? px2hd(parseInt(fontSize) * 2) : px2hd(22),
               textAlign: 'center',
               fill: '#999',
               text: newData[parseInt(text, 10)]?.x,
+              ...restProps,
             };
             return ctf;
           }}
@@ -147,6 +160,7 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
           newData?.map(item => {
             const stringY =
               typeof item.y === 'number' ? String(item.y) : item.y || '';
+            const { fontSize, ...restProps } = guideTextStyle;
             return (
               <Guide
                 key={`${item.index}`}
@@ -155,7 +169,10 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
                 style={{
                   textBaseline: 'bottom',
                   textAlign: 'center',
-                  fontSize: px2hd(24),
+                  fontSize: fontSize
+                    ? px2hd(parseInt(fontSize) * 2)
+                    : px2hd(24),
+                  ...restProps,
                 }}
                 content={item?.y}
                 position={[item?.index, item?.y]}
@@ -164,9 +181,20 @@ const ZeroColumn: FC<ZeroColumnProps> = ({
               />
             );
           })}
+        <ScrollBar
+          xStyle={{
+            backgroundColor: '#e8e8e8',
+            fillerColor: 'rgba(178, 178, 178,0.5)',
+            size: 4,
+            offsetY: 0,
+          }}
+          {...scrollBarConfig}
+        />
       </Chart>
     </div>
   );
+
+  return render();
 };
 
 export default ZeroColumn;

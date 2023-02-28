@@ -1,4 +1,5 @@
 import { ChartProps } from '@alitajs/f2/dist/Chart';
+import { ScrollBarParams } from '@alitajs/f2/dist/ScrollBar';
 export interface SmallColumnarProps {
   /**
    * @description 图表的数据
@@ -40,4 +41,21 @@ export interface ZeroColumnProps extends SmallColumnarProps {
    * @default false
    */
   showGuide?: boolean;
+
+  /**
+   * @description 关于滚动条信息的配置
+   */
+
+  scrollBarConfig?: ScrollBarParams;
+
+  /**
+   *  xStyle x轴信息，包括字体大小等
+   *
+   */
+  xStyle?: any;
+  /**
+   *  guideTextStyle 辅助文字信息，包括字体大小等
+   *
+   */
+  guideTextStyle?: any;
 }
