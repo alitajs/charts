@@ -22,6 +22,7 @@ import {
   RightLegend,
   CustomTableLegend,
   CustomLegend,
+  PieLabel,
 } from './components';
 import { CustomLegendProps } from './components/CustomLegend';
 import './index.less';
@@ -73,7 +74,8 @@ export interface DountProps {
     | 'singleLeg'
     | 'customTable'
     | 'custom'
-    | 'progress';
+    | 'progress'
+    | 'pieLabel';
   /**
    * 对数据进行单属性过滤，比如展示数值加上单位
    */
@@ -170,7 +172,7 @@ export interface DountProps {
 interface TableLegendProps
   extends Omit<
     DountProps,
-    'type' | 'title' | 'colDefs' | 'sumText' | 'sumTitle'
+    'type' | 'title' | 'colDefs' | 'sumText' | 'sumTitle' | 'pieLabel'
   > {
   chart?: ChartProps;
   total: number;
@@ -301,6 +303,7 @@ const Donut: React.FC<DountProps> = props => {
   const isCustomTableLegend = type === 'customTable';
   const isCustomLegend = type === 'custom';
   const isProgressLegend = type === 'progress';
+  const isPieLabel = type === 'pieLabel';
 
   if (!data) {
     return <p>data is undefined!</p>;
@@ -501,6 +504,29 @@ const Donut: React.FC<DountProps> = props => {
             total={total}
             log={log}
             renderLegend={renderLegend}
+          />
+        )}
+        {isPieLabel && (
+          <PieLabel
+            {...props}
+            total={total}
+            sidePadding={40}
+            label1={function label1(data) {
+              return {
+                text: data[x],
+                fill: '#808080',
+                fontWeight: px2hd(700),
+                fontSize: px2hd(24),
+              };
+            }}
+            label2={function label2(data) {
+              return {
+                fill: '#000000',
+                text: data[y]?.toFixed(2),
+                fontWeight: px2hd(700),
+                fontSize: px2hd(24),
+              };
+            }}
           />
         )}
       </Chart>
